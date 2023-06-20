@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  proposals:
+    image: proposals:latest
+    ports:
+      - "80:80"

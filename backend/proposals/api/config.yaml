@@ -1,0 +1,13 @@
+package: api
+generate:
+  models: true
+  embedded-spec: true
+  gin-server: true
+output-options:
+  skip-prune: true
+#import-mapping: #import替换
+#  ./packageA/spec.yaml: github.com/deepmap/oapi-codegen/internal/test/externalref/packageA
+#  ./packageB/spec.yaml: github.com/deepmap/oapi-codegen/internal/test/externalref/packageB
+output: api/oapi.gen.go
+#output-options:
+#  skip-prune: true
