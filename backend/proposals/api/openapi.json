@@ -1,0 +1,674 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Aleo Power-Voting",
+    "description": "",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "proposals"
+    }
+  ],
+  "paths": {
+    "/proposals": {
+      "post": {
+        "summary": "创建投票项目",
+        "x-apifox-folder": "proposals",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "创建投票项目",
+        "tags": [
+          "proposals"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "title": "项目名"
+                  },
+                  "proposal_id": {
+                    "type": "integer",
+                    "title": "项目id"
+                  },
+                  "description": {
+                    "type": "string",
+                    "title": "项目介绍"
+                  },
+                  "start_time": {
+                    "type": "string",
+                    "format": "int64",
+                    "title": "开始时间"
+                  },
+                  "end_time": {
+                    "type": "string",
+                    "title": "结束时间"
+                  },
+                  "status": {
+                    "type": "string",
+                    "title": "提案状态"
+                  },
+                  "option": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "title": "投票参数列表"
+                  },
+                  "participate": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "title",
+                  "proposal_id",
+                  "description",
+                  "start_time",
+                  "end_time",
+                  "status",
+                  "participate",
+                  "option"
+                ],
+                "x-apifox-orders": [
+                  "title",
+                  "proposal_id",
+                  "description",
+                  "start_time",
+                  "end_time",
+                  "status",
+                  "option",
+                  "participate"
+                ],
+                "x-apifox-refs": {},
+                "x-apifox-ignore-properties": []
+              },
+              "example": {
+                "title": "投票项目测试",
+                "proposal_id": 24,
+                "description": "aleo power-voting 测试",
+                "start_time": 12345,
+                "end_time": 12346,
+                "status": "Voting",
+                "participate": "Created",
+                "option": [
+                  "yes",
+                  "no"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "Id": {
+                          "type": "integer"
+                        },
+                        "proposal_id": {
+                          "type": "integer"
+                        },
+                        "Title": {
+                          "type": "string"
+                        },
+                        "Description": {
+                          "type": "string"
+                        },
+                        "Status": {
+                          "type": "string"
+                        },
+                        "Participate": {
+                          "type": "string"
+                        },
+                        "Option": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "start_time": {
+                          "type": "integer"
+                        },
+                        "end_time": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "Id",
+                        "proposal_id",
+                        "Title",
+                        "Description",
+                        "Status",
+                        "Participate",
+                        "Option",
+                        "start_time",
+                        "end_time"
+                      ],
+                      "x-apifox-orders": [
+                        "Id",
+                        "proposal_id",
+                        "Title",
+                        "Description",
+                        "Status",
+                        "Participate",
+                        "Option",
+                        "start_time",
+                        "end_time"
+                      ],
+                      "x-apifox-ignore-properties": []
+                    }
+                  },
+                  "required": [
+                    "ok",
+                    "msg",
+                    "data"
+                  ],
+                  "x-apifox-orders": [
+                    "ok",
+                    "msg",
+                    "data"
+                  ],
+                  "x-apifox-ignore-properties": []
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例",
+                    "value": {
+                      "ok": true,
+                      "msg": "",
+                      "data": {
+                        "Id": 7,
+                        "proposal_id": 24,
+                        "title": "投票项目测试",
+                        "description": "aleo power-voting 测试",
+                        "status": "Voting",
+                        "participate": "Created",
+                        "option": [
+                          "yes",
+                          "no"
+                        ],
+                        "start_time": 12345,
+                        "end_time": 12346
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://www.apifox.cn/web/project/2883591/apis/api-89196815-run"
+      },
+      "patch": {
+        "summary": "更新投票项目状态",
+        "x-apifox-folder": "proposals",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "更新提案 status和participate两个字段，",
+        "tags": [
+          "proposals"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "proposal_id": {
+                    "type": "integer",
+                    "title": "投票项目id",
+                    "description": "proposal_id不是数据库生成id，是投票项目的id"
+                  },
+                  "status": {
+                    "type": "string",
+                    "title": "状态",
+                    "description": "更新状态的值",
+                    "nullable": true
+                  },
+                  "participate": {
+                    "type": "string",
+                    "description": "更新的值",
+                    "nullable": true
+                  },
+                  "update_mask": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "title": "更新字段",
+                    "description": "需要更新的字段"
+                  }
+                },
+                "required": [
+                  "update_mask",
+                  "status",
+                  "participate",
+                  "proposal_id"
+                ],
+                "x-apifox-orders": [
+                  "proposal_id",
+                  "status",
+                  "participate",
+                  "update_mask"
+                ],
+                "x-apifox-ignore-properties": []
+              },
+              "example": {
+                "update_mask": [
+                  "Lorem anim ut",
+                  "esse eu minim"
+                ],
+                "status": "aliquip ut ad",
+                "participate": "ea culpa cillum proident officia",
+                "proposal_id": 21
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-ignore-properties": [],
+                  "x-apifox-orders": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://www.apifox.cn/web/project/2883591/apis/api-89283108-run"
+      },
+      "get": {
+        "summary": "查询投票项目列表",
+        "x-apifox-folder": "proposals",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "proposals"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "页数",
+            "required": true,
+            "example": "1",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "一页多少条数据",
+            "required": true,
+            "example": "1",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "Id": {
+                            "type": "integer"
+                          },
+                          "proposal_id": {
+                            "type": "integer"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "type": "string"
+                          },
+                          "participate": {
+                            "type": "string"
+                          },
+                          "start_time": {
+                            "type": "integer"
+                          },
+                          "end_time": {
+                            "type": "integer"
+                          }
+                        },
+                        "x-apifox-orders": [
+                          "Id",
+                          "proposal_id",
+                          "title",
+                          "description",
+                          "status",
+                          "participate",
+                          "start_time",
+                          "end_time"
+                        ],
+                        "x-apifox-ignore-properties": []
+                      }
+                    }
+                  },
+                  "required": [
+                    "ok",
+                    "msg",
+                    "data"
+                  ],
+                  "x-apifox-orders": [
+                    "ok",
+                    "msg",
+                    "data"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://www.apifox.cn/web/project/2883591/apis/api-89901054-run"
+      }
+    },
+    "/proposals/{proposal_id}": {
+      "get": {
+        "summary": "查询投票项目信息",
+        "x-apifox-folder": "proposals",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "proposals"
+        ],
+        "parameters": [
+          {
+            "name": "proposal_id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": "24",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-ignore-properties": [],
+                  "x-apifox-orders": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://www.apifox.cn/web/project/2883591/apis/api-89281233-run"
+      }
+    },
+    "/involve/{proposal_id}": {
+      "get": {
+        "summary": "查询投票",
+        "x-apifox-folder": "proposals",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "proposals"
+        ],
+        "parameters": [
+          {
+            "name": "proposal_id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": "39",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-ignore-properties": [],
+                  "x-apifox-orders": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://www.apifox.cn/web/project/2883591/apis/api-89924170-run"
+      }
+    },
+    "/involve": {
+      "post": {
+        "summary": "创建投票",
+        "x-apifox-folder": "proposals",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "proposals"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "proposal_id": {
+                    "type": "integer",
+                    "title": "项目id"
+                  },
+                  "participant": {
+                    "type": "string",
+                    "title": "投票参与人"
+                  },
+                  "vote": {
+                    "type": "string",
+                    "title": "投票结果 t-lock的哈希"
+                  }
+                },
+                "x-apifox-orders": [
+                  "proposal_id",
+                  "participant",
+                  "vote",
+                  "01H398VXCFJMC0Z0G1EX5JVZPF"
+                ],
+                "required": [
+                  "proposal_id",
+                  "participant",
+                  "01H398VXCFJMC0Z0G1EX5JVZPF",
+                  "vote"
+                ],
+                "x-apifox-ignore-properties": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-ignore-properties": [],
+                  "x-apifox-orders": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://www.apifox.cn/web/project/2883591/apis/api-89925164-run"
+      }
+    },
+    "/record/{proposal_id}": {
+      "get": {
+        "summary": "查询计票结果",
+        "x-apifox-folder": "proposals",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "proposals"
+        ],
+        "parameters": [
+          {
+            "name": "proposal_id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "example": "39",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "participant",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "in",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-ignore-properties": [],
+                  "x-apifox-orders": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://www.apifox.cn/web/project/2883591/apis/api-89925870-run"
+      }
+    },
+    "/record": {
+      "post": {
+        "summary": "创建计票结果",
+        "x-apifox-folder": "proposals",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "proposals"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "proposal_id": {
+                    "type": "integer",
+                    "title": " 项目id"
+                  },
+                  "win": {
+                    "type": "string",
+                    "title": "计票结果 (密文)"
+                  }
+                },
+                "x-apifox-orders": [
+                  "proposal_id",
+                  "win"
+                ],
+                "required": [
+                  "proposal_id",
+                  "win"
+                ],
+                "x-apifox-ignore-properties": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-ignore-properties": [],
+                  "x-apifox-orders": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://www.apifox.cn/web/project/2883591/apis/api-89926902-run"
+      }
+    }
+  },
+  "components": {
+    "schemas": {}
+  },
+  "servers": [
+    {
+      "url": "http://103.1.65.126:9901/api/v1",
+      "description": "测试环境"
+    }
+  ]
+}

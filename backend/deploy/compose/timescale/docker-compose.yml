@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  timescale:
+    image: timescale/timescaledb:latest-pg15
+    environment:
+      - POSTGRES_PASSWORD=asdiy2w4rg87243
+      - POSTGRES_USER=postgres
+    volumes:
+      - ./initdb.d:/docker-entrypoint-initdb.d
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - 5432:5432

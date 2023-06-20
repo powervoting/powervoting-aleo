@@ -1,0 +1,10 @@
+{
+    "program": "powervoting.aleo",
+    "version": "0.0.0",
+    "description": "",
+    "development": {
+        "private_key": "APrivateKey1zkpDGvqfoUJL7RBtGZyYfnNg9zfppn9PX6D271pop6ZfsKP",
+        "address": "aleo1kp99xlqka2fqx7mwxw26y0g7k0trjje5re4yfhuff6vawsyy5vyq4wppfh"
+    },
+    "license": "MIT"
+}
