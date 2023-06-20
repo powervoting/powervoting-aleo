@@ -1,3 +1,0 @@
-CREATE EXTENSION IF NOT EXISTS timescaledb;
-
-CREATE DATABASE apim WITH OWNER postgres;
