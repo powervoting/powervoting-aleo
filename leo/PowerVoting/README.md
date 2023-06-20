@@ -1,4 +1,4 @@
-# PowerVoting.aleo
+# powervoting.aleo
 
 ## Build Guide
 
