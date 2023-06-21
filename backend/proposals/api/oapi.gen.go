@@ -52,13 +52,24 @@ type PatchProposalsJSONBody struct {
 // PostProposalsJSONBody defines parameters for PostProposals.
 type PostProposalsJSONBody struct {
 	Description string   `json:"description"`
-	EndTime     string   `json:"end_time"`
+	EndTime     int      `json:"end_time"`
 	Option      []string `json:"option"`
 	Participate string   `json:"participate"`
 	ProposalId  int      `json:"proposal_id"`
-	StartTime   string   `json:"start_time"`
+	StartTime   int      `json:"start_time"`
 	Status      string   `json:"status"`
 	Title       string   `json:"title"`
+}
+
+// PostReceivedJSONBody defines parameters for PostReceived.
+type PostReceivedJSONBody struct {
+	ProposalId int    `json:"proposal_id"`
+	Receiver   string `json:"receiver"`
+}
+
+// GetReceivedProposalIdParams defines parameters for GetReceivedProposalId.
+type GetReceivedProposalIdParams struct {
+	Receiver string `form:"receiver" json:"receiver"`
 }
 
 // PostRecordJSONBody defines parameters for PostRecord.
@@ -72,6 +83,11 @@ type GetRecordProposalIdParams struct {
 	Participant string `form:"participant" json:"participant"`
 }
 
+// GetVoteProposalIdParams defines parameters for GetVoteProposalId.
+type GetVoteProposalIdParams struct {
+	Participant string `form:"participant" json:"participant"`
+}
+
 // PostInvolveJSONRequestBody defines body for PostInvolve for application/json ContentType.
 type PostInvolveJSONRequestBody PostInvolveJSONBody
 
@@ -80,6 +96,9 @@ type PatchProposalsJSONRequestBody PatchProposalsJSONBody
 
 // PostProposalsJSONRequestBody defines body for PostProposals for application/json ContentType.
 type PostProposalsJSONRequestBody PostProposalsJSONBody
+
+// PostReceivedJSONRequestBody defines body for PostReceived for application/json ContentType.
+type PostReceivedJSONRequestBody PostReceivedJSONBody
 
 // PostRecordJSONRequestBody defines body for PostRecord for application/json ContentType.
 type PostRecordJSONRequestBody PostRecordJSONBody
@@ -91,7 +110,7 @@ type ServerInterface interface {
 	PostInvolve(c *gin.Context)
 	// 查询投票
 	// (GET /involve/{proposal_id})
-	GetInvolveProposalId(c *gin.Context, proposalId string)
+	GetInvolveProposalId(c *gin.Context, proposalId int)
 	// 查询投票项目列表
 	// (GET /proposals)
 	GetProposals(c *gin.Context, params GetProposalsParams)
@@ -103,13 +122,22 @@ type ServerInterface interface {
 	PostProposals(c *gin.Context)
 	// 查询投票项目信息
 	// (GET /proposals/{proposal_id})
-	GetProposalsProposalId(c *gin.Context, proposalId string)
+	GetProposalsProposalId(c *gin.Context, proposalId int)
+	// 存储领取 NFT 接口
+	// (POST /received)
+	PostReceived(c *gin.Context)
+	// 查询 NFT
+	// (GET /received/{proposal_id})
+	GetReceivedProposalId(c *gin.Context, proposalId int, params GetReceivedProposalIdParams)
 	// 创建计票结果
 	// (POST /record)
 	PostRecord(c *gin.Context)
 	// 查询计票结果
 	// (GET /record/{proposal_id})
 	GetRecordProposalId(c *gin.Context, proposalId int, params GetRecordProposalIdParams)
+	// 查询已投票
+	// (GET /vote/{proposal_id})
+	GetVoteProposalId(c *gin.Context, proposalId int, params GetVoteProposalIdParams)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -137,7 +165,7 @@ func (siw *ServerInterfaceWrapper) GetInvolveProposalId(c *gin.Context) {
 	var err error
 
 	// ------------- Path parameter "proposal_id" -------------
-	var proposalId string
+	var proposalId int
 
 	err = runtime.BindStyledParameter("simple", false, "proposal_id", c.Param("proposal_id"), &proposalId)
 	if err != nil {
@@ -223,7 +251,7 @@ func (siw *ServerInterfaceWrapper) GetProposalsProposalId(c *gin.Context) {
 	var err error
 
 	// ------------- Path parameter "proposal_id" -------------
-	var proposalId string
+	var proposalId int
 
 	err = runtime.BindStyledParameter("simple", false, "proposal_id", c.Param("proposal_id"), &proposalId)
 	if err != nil {
@@ -236,6 +264,55 @@ func (siw *ServerInterfaceWrapper) GetProposalsProposalId(c *gin.Context) {
 	}
 
 	siw.Handler.GetProposalsProposalId(c, proposalId)
+}
+
+// PostReceived operation middleware
+func (siw *ServerInterfaceWrapper) PostReceived(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+	}
+
+	siw.Handler.PostReceived(c)
+}
+
+// GetReceivedProposalId operation middleware
+func (siw *ServerInterfaceWrapper) GetReceivedProposalId(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "proposal_id" -------------
+	var proposalId int
+
+	err = runtime.BindStyledParameter("simple", false, "proposal_id", c.Param("proposal_id"), &proposalId)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter proposal_id: %s", err), http.StatusBadRequest)
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetReceivedProposalIdParams
+
+	// ------------- Required query parameter "receiver" -------------
+
+	if paramValue := c.Query("receiver"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandler(c, fmt.Errorf("Query argument receiver is required, but not found: %s", err), http.StatusBadRequest)
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "receiver", c.Request.URL.Query(), &params.Receiver)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter receiver: %s", err), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+	}
+
+	siw.Handler.GetReceivedProposalId(c, proposalId, params)
 }
 
 // PostRecord operation middleware
@@ -287,6 +364,45 @@ func (siw *ServerInterfaceWrapper) GetRecordProposalId(c *gin.Context) {
 	siw.Handler.GetRecordProposalId(c, proposalId, params)
 }
 
+// GetVoteProposalId operation middleware
+func (siw *ServerInterfaceWrapper) GetVoteProposalId(c *gin.Context) {
+
+	var err error
+
+	// ------------- Path parameter "proposal_id" -------------
+	var proposalId int
+
+	err = runtime.BindStyledParameter("simple", false, "proposal_id", c.Param("proposal_id"), &proposalId)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter proposal_id: %s", err), http.StatusBadRequest)
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetVoteProposalIdParams
+
+	// ------------- Required query parameter "participant" -------------
+
+	if paramValue := c.Query("participant"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandler(c, fmt.Errorf("Query argument participant is required, but not found: %s", err), http.StatusBadRequest)
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "participant", c.Request.URL.Query(), &params.Participant)
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter participant: %s", err), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+	}
+
+	siw.Handler.GetVoteProposalId(c, proposalId, params)
+}
+
 // GinServerOptions provides options for the Gin server.
 type GinServerOptions struct {
 	BaseURL      string
@@ -328,9 +444,15 @@ func RegisterHandlersWithOptions(router *gin.Engine, si ServerInterface, options
 
 	router.GET(options.BaseURL+"/proposals/:proposal_id", wrapper.GetProposalsProposalId)
 
+	router.POST(options.BaseURL+"/received", wrapper.PostReceived)
+
+	router.GET(options.BaseURL+"/received/:proposal_id", wrapper.GetReceivedProposalId)
+
 	router.POST(options.BaseURL+"/record", wrapper.PostRecord)
 
 	router.GET(options.BaseURL+"/record/:proposal_id", wrapper.GetRecordProposalId)
+
+	router.GET(options.BaseURL+"/vote/:proposal_id", wrapper.GetVoteProposalId)
 
 	return router
 }
@@ -338,34 +460,36 @@ func RegisterHandlersWithOptions(router *gin.Engine, si ServerInterface, options
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"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",
+	"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",
+	"hHMsAAA=",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

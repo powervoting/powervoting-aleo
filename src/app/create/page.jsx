@@ -1,5 +1,5 @@
 export default function CreatePage() {
   return (
-    <>create a poll</>
+    <div className="text-xl">create a poll</div>
   )
 }
