@@ -25,8 +25,8 @@ func GetRecord(proposalId int) (*models.Record, error) {
 
 func AuthRecord(proposalId int, participant string) error {
 	involve := &models.Involve{
-		ProposalId:  proposalId,
-		Participant: participant,
+		ProposalId: proposalId,
+		Vote:       participant,
 	}
 	if err := db.GetProposalsDB().
 		Where("proposal_id = ? AND participant = ?", proposalId, participant).

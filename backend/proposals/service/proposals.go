@@ -38,7 +38,7 @@ func CreateProposals(req models.CreateProposalRequest) (*models.CreateProposalRe
 	return &req, tx.Commit().Error
 }
 
-func GetProposals(proposalId string) (*models.GetProposalRequest, error) {
+func GetProposals(proposalId int) (*models.GetProposalRequest, error) {
 	var proposals models.GetProposalRequest
 
 	tx := db.GetProposalsDB().Begin()
