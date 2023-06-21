@@ -1,0 +1,27 @@
+export default function Table ({ title, list }) {
+  return (
+    <table className='min-w-full bg-[#273141] rounded text-left'>
+      <thead>
+        <tr>
+          <th scope='col' colSpan={2}>
+            <h2 className='font-normal px-8 py-7 text-2xl border-b border-[#313D4F]'>
+              {title}
+            </h2>
+          </th>
+        </tr>
+      </thead>
+      <tbody className='divide-y divide-[#313D4F]'>
+        {list.map(item => (
+          <tr key={item.name} className='divide-x divide-[#313D4F]'>
+            <td className='w-[280px] whitespace-nowrap py-9 px-8 text-xl text-[#8896AA]'>
+              {item.name}
+            </td>
+            <td className='whitespace-nowrap py-5 px-4 text-xl text-white'>
+              {item.comp}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  )
+}
