@@ -41,13 +41,10 @@
                     "title": "项目介绍"
                   },
                   "start_time": {
-                    "type": "string",
-                    "format": "int64",
-                    "title": "开始时间"
+                    "type": "integer"
                   },
                   "end_time": {
-                    "type": "string",
-                    "title": "结束时间"
+                    "type": "integer"
                   },
                   "status": {
                     "type": "string",
@@ -114,31 +111,28 @@
                     "ok": {
                       "type": "boolean"
                     },
-                    "msg": {
-                      "type": "string"
-                    },
                     "data": {
                       "type": "object",
                       "properties": {
-                        "Id": {
+                        "id": {
                           "type": "integer"
                         },
                         "proposal_id": {
                           "type": "integer"
                         },
-                        "Title": {
+                        "title": {
                           "type": "string"
                         },
-                        "Description": {
+                        "description": {
                           "type": "string"
                         },
-                        "Status": {
+                        "status": {
                           "type": "string"
                         },
-                        "Participate": {
+                        "participate": {
                           "type": "string"
                         },
-                        "Option": {
+                        "option": {
                           "type": "array",
                           "items": {
                             "type": "string"
@@ -152,24 +146,24 @@
                         }
                       },
                       "required": [
-                        "Id",
+                        "id",
                         "proposal_id",
-                        "Title",
-                        "Description",
-                        "Status",
-                        "Participate",
-                        "Option",
+                        "title",
+                        "description",
+                        "status",
+                        "participate",
+                        "option",
                         "start_time",
                         "end_time"
                       ],
                       "x-apifox-orders": [
-                        "Id",
+                        "id",
                         "proposal_id",
-                        "Title",
-                        "Description",
-                        "Status",
-                        "Participate",
-                        "Option",
+                        "title",
+                        "description",
+                        "status",
+                        "participate",
+                        "option",
                         "start_time",
                         "end_time"
                       ],
@@ -178,12 +172,10 @@
                   },
                   "required": [
                     "ok",
-                    "msg",
                     "data"
                   ],
                   "x-apifox-orders": [
                     "ok",
-                    "msg",
                     "data"
                   ],
                   "x-apifox-ignore-properties": []
@@ -193,9 +185,8 @@
                     "summary": "成功示例",
                     "value": {
                       "ok": true,
-                      "msg": "",
                       "data": {
-                        "Id": 7,
+                        "id": 0,
                         "proposal_id": 24,
                         "title": "投票项目测试",
                         "description": "aleo power-voting 测试",
@@ -343,9 +334,6 @@
                     "ok": {
                       "type": "boolean"
                     },
-                    "msg": {
-                      "type": "string"
-                    },
                     "data": {
                       "type": "array",
                       "items": {
@@ -392,12 +380,10 @@
                   },
                   "required": [
                     "ok",
-                    "msg",
                     "data"
                   ],
                   "x-apifox-orders": [
                     "ok",
-                    "msg",
                     "data"
                   ],
                   "x-apifox-ignore-properties": []
@@ -427,7 +413,7 @@
             "required": true,
             "example": "24",
             "schema": {
-              "type": "string"
+              "type": "integer"
             }
           }
         ],
@@ -467,7 +453,7 @@
             "required": true,
             "example": "39",
             "schema": {
-              "type": "string"
+              "type": "integer"
             }
           }
         ],
@@ -478,9 +464,45 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "properties": {},
-                  "x-apifox-ignore-properties": [],
-                  "x-apifox-orders": []
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "proposal_id": {
+                          "type": "integer"
+                        },
+                        "participant": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "proposal_id",
+                        "participant"
+                      ],
+                      "x-apifox-orders": [
+                        "id",
+                        "proposal_id",
+                        "participant"
+                      ],
+                      "x-apifox-ignore-properties": []
+                    }
+                  },
+                  "required": [
+                    "ok",
+                    "data"
+                  ],
+                  "x-apifox-orders": [
+                    "ok",
+                    "data"
+                  ],
+                  "x-apifox-ignore-properties": []
                 }
               }
             }
@@ -543,9 +565,45 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "properties": {},
-                  "x-apifox-ignore-properties": [],
-                  "x-apifox-orders": []
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "proposal_id": {
+                          "type": "integer"
+                        },
+                        "participant": {
+                          "type": "string"
+                        },
+                        "vote": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "proposal_id",
+                        "participant",
+                        "vote"
+                      ],
+                      "x-apifox-orders": [
+                        "proposal_id",
+                        "participant",
+                        "vote"
+                      ],
+                      "x-apifox-ignore-properties": []
+                    }
+                  },
+                  "required": [
+                    "ok",
+                    "data"
+                  ],
+                  "x-apifox-orders": [
+                    "ok",
+                    "data"
+                  ],
+                  "x-apifox-ignore-properties": []
                 }
               }
             }
@@ -593,9 +651,45 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "properties": {},
-                  "x-apifox-ignore-properties": [],
-                  "x-apifox-orders": []
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "proposal_id": {
+                          "type": "integer"
+                        },
+                        "win": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "proposal_id",
+                        "win"
+                      ],
+                      "x-apifox-orders": [
+                        "id",
+                        "proposal_id",
+                        "win"
+                      ],
+                      "x-apifox-ignore-properties": []
+                    }
+                  },
+                  "required": [
+                    "ok",
+                    "data"
+                  ],
+                  "x-apifox-orders": [
+                    "ok",
+                    "data"
+                  ],
+                  "x-apifox-ignore-properties": []
                 }
               }
             }
@@ -650,6 +744,98 @@
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "proposal_id": {
+                          "type": "integer"
+                        },
+                        "win": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "proposal_id",
+                        "win"
+                      ],
+                      "x-apifox-orders": [
+                        "id",
+                        "proposal_id",
+                        "win"
+                      ],
+                      "x-apifox-ignore-properties": []
+                    }
+                  },
+                  "required": [
+                    "ok",
+                    "data"
+                  ],
+                  "x-apifox-orders": [
+                    "ok",
+                    "data"
+                  ],
+                  "x-apifox-ignore-properties": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://www.apifox.cn/web/project/2883591/apis/api-89926902-run"
+      }
+    },
+    "/received": {
+      "post": {
+        "summary": "存储领取 NFT 接口",
+        "x-apifox-folder": "proposals",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "proposals"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "proposal_id": {
+                    "type": "integer"
+                  },
+                  "receiver": {
+                    "type": "string",
+                    "title": "领取人"
+                  }
+                },
+                "x-apifox-orders": [
+                  "proposal_id",
+                  "receiver"
+                ],
+                "required": [
+                  "proposal_id",
+                  "receiver"
+                ],
+                "x-apifox-ignore-properties": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
                   "properties": {},
                   "x-apifox-ignore-properties": [],
                   "x-apifox-orders": []
@@ -658,17 +844,110 @@
             }
           }
         },
-        "x-run-in-apifox": "https://www.apifox.cn/web/project/2883591/apis/api-89926902-run"
+        "x-run-in-apifox": "https://www.apifox.cn/web/project/2883591/apis/api-90402247-run"
+      }
+    },
+    "/received/{proposal_id}": {
+      "get": {
+        "summary": "查询 NFT",
+        "x-apifox-folder": "proposals",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "proposals"
+        ],
+        "parameters": [
+          {
+            "name": "proposal_id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "receiver",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-ignore-properties": [],
+                  "x-apifox-orders": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://www.apifox.cn/web/project/2883591/apis/api-90420335-run"
+      }
+    },
+    "/vote/{proposal_id}": {
+      "get": {
+        "summary": "查询已投票",
+        "x-apifox-folder": "proposals",
+        "x-apifox-status": "developing",
+        "deprecated": false,
+        "description": "",
+        "tags": [
+          "proposals"
+        ],
+        "parameters": [
+          {
+            "name": "proposal_id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "participant",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "x-apifox-ignore-properties": [],
+                  "x-apifox-orders": []
+                }
+              }
+            }
+          }
+        },
+        "x-run-in-apifox": "https://www.apifox.cn/web/project/2883591/apis/api-90421779-run"
       }
     }
   },
   "components": {
     "schemas": {}
   },
-  "servers": [
-    {
-      "url": "http://103.1.65.126:9901/api/v1",
-      "description": "测试环境"
-    }
-  ]
+  "servers": []
 }

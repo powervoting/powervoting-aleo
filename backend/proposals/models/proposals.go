@@ -49,7 +49,7 @@ func (GetProposalRequest) TableName() string {
 }
 
 type UpdateProposalsRequest struct {
-	ProposalId  int64          `json:"proposal_id"`
+	ProposalId  int            `json:"proposal_id"`
 	Status      string         `json:"status"`
 	Participate string         `json:"participate"`
 	UpdateMask  pq.StringArray `gorm:"type:text[]" json:"update_mask"`
