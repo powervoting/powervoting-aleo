@@ -74,7 +74,7 @@ export default function CreatePage () {
     {
       name: 'Poll Type',
       comp: (
-        <RadioGroup className="flex">
+        <RadioGroup className='flex'>
           {pollTypes.map((poll, settingIdx) => (
             <RadioGroup.Option
               key={poll.label}
@@ -89,13 +89,15 @@ export default function CreatePage () {
                     className={classNames(
                       checked
                         ? 'bg-[#45B753] border-transparent'
-                        : 'bg-white border-gray-300',
+                        : 'bg-[#212B3B] border-[#38485C]',
                       active ? 'ring-2 ring-offset-2 ring-[#45B753]' : '',
                       'mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded-full border flex items-center justify-center'
                     )}
                     aria-hidden='true'
                   >
-                    <span className='rounded-full bg-white w-1.5 h-1.5' />
+                    {(active || checked)&& (
+                      <span className='rounded-full bg-white w-1.5 h-1.5' />
+                    )}
                   </span>
                   <span className='ml-3'>
                     <RadioGroup.Label
