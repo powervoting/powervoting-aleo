@@ -4,7 +4,7 @@ export default function Table ({ title, list }) {
       <thead>
         <tr>
           <th scope='col' colSpan={2}>
-            <h2 className='font-normal px-8 py-7 text-2xl border-b border-[#313D4F]'>
+            <h2 className='font-normal text-white px-8 py-7 text-2xl border-b border-[#313D4F]'>
               {title}
             </h2>
           </th>
