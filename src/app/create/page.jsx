@@ -71,19 +71,36 @@ export default function CreatePage () {
     {
       name: 'Poll Expieraion Time',
       comp: (
-        <div className='space-x-2.5'>
-          <input
-            type='date-locale'
-            className='form-input rounded bg-[#212B3C] border border-[#313D4F] w-[248px]'
-            placeholder='Pick Date'
-            {...register('start_time', { required: true })}
-          />
-          <input
-            type='date-locale'
-            className='form-input rounded bg-[#212B3C] border border-[#313D4F] w-[248px]'
-            placeholder='Pick Date'
-            {...register('end_time', { required: true })}
-          />
+        <div className='flex items-center'>
+          <div className='mr-2.5'>
+            <input
+              type='datetime-local'
+              className={classNames(
+                'form-input rounded bg-[#212B3C] border border-[#313D4F] w-[248px]',
+                errors['start_time'] && 'border-red-500 focus:border-red-500'
+              )}
+              placeholder='Pick Date'
+              {...register('start_time', { required: true })}
+            />
+            {errors['start_time'] && (
+              <p className='text-red-500 mt-1'>Please Pick Start Date</p>
+            )}
+          </div>
+
+          <div>
+            <input
+              type='datetime-local'
+              className={classNames(
+                'form-input rounded bg-[#212B3C] border border-[#313D4F] w-[248px]',
+                errors['end_time'] && 'border-red-500 focus:border-red-500'
+              )}
+              placeholder='Pick Date'
+              {...register('end_time', { required: true })}
+            />
+            {errors['end_time'] && (
+              <p className='text-red-500 mt-1'>Please Pick Start Date</p>
+            )}
+          </div>
         </div>
       )
     },
