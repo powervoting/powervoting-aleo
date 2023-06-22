@@ -2,24 +2,9 @@
 import Table from '@/components/table'
 import Button from '@/components/Button'
 import { RadioGroup } from '@headlessui/react'
-function classNames (...classes) {
-  return classes.filter(Boolean).join(' ')
-}
+import classNames from 'classnames'
+import { useForm, Controller, SubmitHandler } from 'react-hook-form'
 
-const settings = [
-  {
-    name: 'Public access',
-    description: 'This project would be available to anyone who has the link'
-  },
-  {
-    name: 'Private to Project Members',
-    description: 'Only members of this project would be able to access'
-  },
-  {
-    name: 'Private to you',
-    description: 'You are the only one able to access this project'
-  }
-]
 const pollTypes = [
   {
     label: 'Single Answer',
@@ -31,42 +16,73 @@ const pollTypes = [
   }
 ]
 export default function CreatePage () {
+  const {
+    register,
+    handleSubmit,
+    control,
+    watch,
+    formState: { errors }
+  } = useForm({
+    defaultValues: {
+      poll_type: 2
+    }
+  })
+  const onSubmit = data => console.log(data)
+
   const list = [
     {
       name: 'Poll Title',
       comp: (
-        <input
-          type='text'
-          className='form-input w-full rounded bg-[#212B3C] border border-[#313D4F]'
-          placeholder='Poll Title'
-        />
+        <>
+          <input
+            type='text'
+            className={classNames(
+              'form-input w-full rounded bg-[#212B3C] border border-[#313D4F]',
+              errors['title'] && 'border-red-500 focus:border-red-500'
+            )}
+            placeholder='Poll Title'
+            {...register('title', { required: true })}
+          />
+          {errors['title'] && (
+            <p className='text-red-500 mt-1'>Poll Title is required</p>
+          )}
+        </>
       )
     },
     {
       name: 'Poll Description',
       comp: (
-        <textarea
-          rows='3'
-          className='form-textarea w-full rounded bg-[#212B3C] border border-[#313D4F]'
-          placeholder='Poll Description'
-        />
+        <>
+          <textarea
+            rows='3'
+            className={classNames(
+              'form-textarea w-full rounded bg-[#212B3C] border border-[#313D4F]',
+              errors['description'] && 'border-red-500 focus:border-red-500'
+            )}
+            placeholder='Poll Description'
+            {...register('description', { required: true })}
+          />
+          {errors['description'] && (
+            <p className='text-red-500 mt-1'>Poll Description is required</p>
+          )}
+        </>
       )
     },
     {
-      name: 'Poll Description',
+      name: 'Poll Expieraion Time',
       comp: (
         <div className='space-x-2.5'>
           <input
-            type='date'
-            lang='en'
+            type='date-locale'
             className='form-input rounded bg-[#212B3C] border border-[#313D4F] w-[248px]'
             placeholder='Pick Date'
+            {...register('start_time', { required: true })}
           />
           <input
-            type='time'
-            lang='en'
+            type='date-locale'
             className='form-input rounded bg-[#212B3C] border border-[#313D4F] w-[248px]'
             placeholder='Pick Date'
+            {...register('end_time', { required: true })}
           />
         </div>
       )
@@ -74,59 +90,69 @@ export default function CreatePage () {
     {
       name: 'Poll Type',
       comp: (
-        <RadioGroup className='flex'>
-          {pollTypes.map((poll, settingIdx) => (
-            <RadioGroup.Option
-              key={poll.label}
-              value={poll}
-              className={
-                'relative flex items-center cursor-pointer p-4 focus:outline-none'
-              }
-            >
-              {({ active, checked }) => (
-                <>
-                  <span
-                    className={classNames(
-                      checked
-                        ? 'bg-[#45B753] border-transparent'
-                        : 'bg-[#212B3B] border-[#38485C]',
-                      active ? 'ring-2 ring-offset-2 ring-[#45B753]' : '',
-                      'mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded-full border flex items-center justify-center'
-                    )}
-                    aria-hidden='true'
+        <Controller
+          name='poll_type'
+          control={control}
+          render={({ field: { onChange, value } }) => {
+            return (
+              <RadioGroup className='flex' value={value} onChange={onChange}>
+                {pollTypes.map(poll => (
+                  <RadioGroup.Option
+                    key={poll.label}
+                    value={poll.value}
+                    className={
+                      'relative flex items-center cursor-pointer p-4 focus:outline-none'
+                    }
                   >
-                    {(active || checked)&& (
-                      <span className='rounded-full bg-white w-1.5 h-1.5' />
+                    {({ active, checked }) => (
+                      <>
+                        <span
+                          className={classNames(
+                            checked
+                              ? 'bg-[#45B753] border-transparent'
+                              : 'bg-[#212B3B] border-[#38485C]',
+                            active ? 'ring-2 ring-offset-2 ring-[#45B753]' : '',
+                            'mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded-full border flex items-center justify-center'
+                          )}
+                          aria-hidden='true'
+                        >
+                          {(active || checked) && (
+                            <span className='rounded-full bg-white w-1.5 h-1.5' />
+                          )}
+                        </span>
+                        <span className='ml-3'>
+                          <RadioGroup.Label
+                            as='span'
+                            className={
+                              checked ? 'text-white' : 'text-[#8896AA]'
+                            }
+                          >
+                            {poll.label}
+                          </RadioGroup.Label>
+                        </span>
+                      </>
                     )}
-                  </span>
-                  <span className='ml-3'>
-                    <RadioGroup.Label
-                      as='span'
-                      className={checked ? 'text-white' : 'text-[#8896AA]'}
-                    >
-                      {poll.label}
-                    </RadioGroup.Label>
-                  </span>
-                </>
-              )}
-            </RadioGroup.Option>
-          ))}
-        </RadioGroup>
+                  </RadioGroup.Option>
+                ))}
+              </RadioGroup>
+            )
+          }}
+        />
       )
     }
   ]
-  const onFinish = values => {
-    console.log(values)
-  }
-  return (
-    <div className='flow-root space-y-8'>
-      <Table title='Create A Poll' list={list} />
 
-      <div className='text-center'>
-        <Button className='px-16' htmlType='submit'>
-          Create
-        </Button>
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div className='flow-root space-y-8'>
+        <Table title='Create A Poll' list={list} />
+
+        <div className='text-center'>
+          <Button className='px-16' htmlType='submit'>
+            Create
+          </Button>
+        </div>
       </div>
-    </div>
+    </form>
   )
 }

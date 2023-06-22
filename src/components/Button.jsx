@@ -12,7 +12,7 @@ export default function Button ({
   const primary = 'bg-[#1991EB] text-[#fff]'
   return (
     <button
-      type='button'
+      type={htmlType}
       className={cls(base, type === 'primary' && primary, className)}
       {...props}
     >
