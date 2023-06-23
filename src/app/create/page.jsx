@@ -3,7 +3,8 @@ import Table from '@/components/table'
 import Button from '@/components/Button'
 import { RadioGroup } from '@headlessui/react'
 import classNames from 'classnames'
-import { useForm, Controller, SubmitHandler } from 'react-hook-form'
+import { useForm, Controller, useFieldArray } from 'react-hook-form'
+import { TrashIcon } from '@heroicons/react/24/outline'
 
 const pollTypes = [
   {
@@ -24,7 +25,15 @@ export default function CreatePage () {
     formState: { errors }
   } = useForm({
     defaultValues: {
-      poll_type: 2
+      poll_type: 2,
+      option: ['option_1']
+    }
+  })
+  const { fields, append, remove } = useFieldArray({
+    name: 'option',
+    control,
+    rules: {
+      required: true
     }
   })
   const onSubmit = data => console.log(data)
@@ -155,6 +164,63 @@ export default function CreatePage () {
             )
           }}
         />
+      )
+    },
+    {
+      name: 'Poll Options',
+      comp: (
+        <>
+          <div className='rounded border border-[#313D4F] divide-y divide-[#212B3C]'>
+            <div className='flex justify-between bg-[#293545] text-base text-[#8896AA] px-5 py-4'>
+              <span>Options</span>
+              <span>Operations</span>
+            </div>
+            {fields.map((field, index) => (
+              <div key={field.id}>
+                <div className='flex items-center pl-2.5 py-2.5 pr-5'>
+                  <input
+                    type='text'
+                    className={classNames(
+                      'form-input flex-auto rounded bg-[#212B3C] border border-[#313D4F]',
+                      errors.option?.[0] &&
+                        'border-red-500 focus:border-red-500'
+                    )}
+                    placeholder='Edit Option'
+                    {...register(`option.${index}`, { required: true })}
+                  />
+                  <button
+                    type='button'
+                    onClick={() => remove(index)}
+                    className='ml-3 w-[50px] h-[50px] flex justify-center items-center bg-[#212B3C] rounded-full'
+                  >
+                    <TrashIcon className='h-5 w-5 text-[#8896AA] hover:opacity-80' />
+                  </button>
+                </div>
+                {errors.option?.[0] && (
+                  <div className='px-2.5 pb-3'>
+                    <p className='text-red-500 text-base'>
+                      This field is required
+                    </p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+          {errors.option?.root && (
+            <div className='px-2.5 py-3'>
+              <p className='text-red-500 text-base'>Please add some options</p>
+            </div>
+          )}
+          <div className='pl-2.5 py-4'>
+            <button
+              type='button'
+              onClick={() => append('')}
+              className='px-8 py-3 rounded border border-[#313D4F] bg-[#3B495B] text-base text-white hover:opacity-80'
+            >
+              Add Option
+            </button>
+          </div>
+        </>
       )
     }
   ]
