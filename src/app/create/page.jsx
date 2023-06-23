@@ -5,6 +5,7 @@ import { RadioGroup } from '@headlessui/react'
 import classNames from 'classnames'
 import { useForm, Controller, useFieldArray } from 'react-hook-form'
 import { TrashIcon } from '@heroicons/react/24/outline'
+import { useState } from 'react'
 
 const pollTypes = [
   {
@@ -21,14 +22,14 @@ export default function CreatePage () {
     register,
     handleSubmit,
     control,
-    watch,
     formState: { errors }
   } = useForm({
     defaultValues: {
       poll_type: 2,
-      option: ['option_1']
+      option: ['Edit Option']
     }
   })
+  const [loading, setLoading] = useState(false)
   const { fields, append, remove } = useFieldArray({
     name: 'option',
     control,
@@ -231,7 +232,7 @@ export default function CreatePage () {
         <Table title='Create A Poll' list={list} />
 
         <div className='text-center'>
-          <Button className='px-16' htmlType='submit'>
+          <Button className='px-16' htmlType='submit' disabled={loading}>
             Create
           </Button>
         </div>

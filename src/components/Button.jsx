@@ -6,6 +6,7 @@ export default function Button ({
   type = 'primary',
   className,
   htmlType = 'button',
+  loading = false,
   ...props
 }) {
   const base = 'rounded hover:opacity-80 py-4 px-8 text-xl'
@@ -13,6 +14,7 @@ export default function Button ({
   return (
     <button
       type={htmlType}
+      disabled={loading}
       className={cls(base, type === 'primary' && primary, className)}
       {...props}
     >
