@@ -19,7 +19,7 @@ export default function Table ({ title, list, subTitle }) {
             <td className='w-[280px] whitespace-nowrap py-9 px-8 text-xl text-[#8896AA]'>
               {item.name}
             </td>
-            <td className='whitespace-nowrap py-5 px-4 text-xl text-white'>
+            <td className='py-5 px-4 text-xl text-white'>
               {item.comp}
             </td>
           </tr>
