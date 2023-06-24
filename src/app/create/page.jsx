@@ -1,5 +1,5 @@
 'use client'
-import Table from '@/components/table'
+import Table from '@/components/Table'
 import Button from '@/components/Button'
 import { RadioGroup } from '@headlessui/react'
 import classNames from 'classnames'

@@ -1,4 +1,4 @@
-export default function Table ({ title, list }) {
+export default function Table ({ title, list, subTitle }) {
   return (
     <table className='min-w-full bg-[#273141] rounded text-left'>
       <thead>
@@ -6,6 +6,9 @@ export default function Table ({ title, list }) {
           <th scope='col' colSpan={2}>
             <h2 className='font-normal text-white px-8 py-7 text-2xl border-b border-[#313D4F]'>
               {title}
+              {subTitle && (
+                <sapn className='text-[#8896AA] text-xl px-1'> - {subTitle}</sapn>
+              )} 
             </h2>
           </th>
         </tr>

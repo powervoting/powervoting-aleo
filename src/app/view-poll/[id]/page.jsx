@@ -1,4 +1,4 @@
-import Table from '@/components/table'
+import Table from '@/components/Table'
 
 export default function ViewPoll ({ params }) {
   const optionsList = [
