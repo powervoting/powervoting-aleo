@@ -55,6 +55,17 @@ program powervoting.aleo {
         };
     }
 
+    // get voting power for dao management, private action
+    // credits: retrieved from Soter wallet, used as voting power here for dao
+    transition mint_power_dao(credits: u64) -> Power {
+        // TODO: get voting power from pledge
+        return Power {
+            owner: self.caller,
+            gates: 0u64,
+            power: credits,
+        };
+    }
+
     // propose a new proposal, public action.
     transition propose(public proposal: Proposal) {
         // finalize the proposal.
