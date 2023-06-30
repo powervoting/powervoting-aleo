@@ -84,7 +84,7 @@ program powervoting.aleo {
         };
         let proposal_id_key: field = 2074281269322187893875field;   // means "proposals" in string
         // get proposal id or init with 0
-        let pid: u64 = Mapping::get_or_init(proposal_ids, proposal_id_key, 0u64);
+        let pid: u64 = Mapping::get_or_use(proposal_ids, proposal_id_key, 0u64);
         // store proposal into proposals mapping
         Mapping::set(proposals, pid, proposal);
         // update proposal id
@@ -119,7 +119,7 @@ program powervoting.aleo {
         // store vote info into mapping
         Mapping::set(votes, pvid, vote_info);
         // update vote id
-        let vid: u64 = Mapping::get_or_init(vote_ids, pid, 0u64);
+        let vid: u64 = Mapping::get_or_use(vote_ids, pid, 0u64);
         Mapping::set(vote_ids, pid, vid + 1u64);
     }
 
