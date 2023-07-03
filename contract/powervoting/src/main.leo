@@ -49,6 +49,7 @@ program powervoting.aleo {
     record Power {
         owner: address,
         power: u64,             // voting power, default is 1u64
+        withdrawable_block_height: u32, // withdrawable block height
     }
 
 
@@ -66,15 +67,17 @@ program powervoting.aleo {
     transition mint_power() -> Power {
         return Power {
             owner: self.caller,
-            power: 1u64,    //defaut 1 power
+            power: 1u64,    //  defaut 1 power
+            withdrawable_block_height: 0u32,    // default can be withdrawed at any time.
         };
     }
 
     // get voting power for dao management, private action
-    transition mint_power_by_token(token: Token) -> Power {
+    transition mint_power_by_token(token: Token, withdrawable_block_height: u32) -> Power {
         return Power {
             owner: self.caller,
             power: token.amount,
+            withdrawable_block_height: withdrawable_block_height,
         };
     }
 
@@ -82,10 +85,15 @@ program powervoting.aleo {
     transition withdraw_token_from_power(power: Power) -> Token {
         return Token {
             owner: self.caller,
-            name: 7006912922137281764648909451784002770527598field,
+            name: 7006912922137281764648909451784002770527598field,     // stands for Power Voting Token string
             symbol: 5264980field,   // stands for PVT string
             amount: power.power,
-        };
+        } then finalize(power);
+    }
+
+    // finalize the withdraw feature, if current block height is smaller than power withdrawble_block_height, withdraw will be failed.
+    finalize withdraw_token_from_power(power: Power) {
+        assert(power.withdrawable_block_height <= block.height);
     }
 
 
@@ -96,7 +104,7 @@ program powervoting.aleo {
     }
 
     // store proposal into mapping
-    finalize propose( public title: field, public content: field, public options: field, public vote_type: u8, public expieration: field) {
+    finalize propose(public title: field, public content: field, public options: field, public vote_type: u8, public expieration: field) {
         // generate proposal
         let proposal: Proposal = Proposal {
             title,
