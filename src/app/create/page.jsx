@@ -31,7 +31,7 @@ export default function CreatePage () {
   })
   const onSubmit = async data => {
     console.log(data)
-    const { title, description: content, expieration, vote_type } = data
+    const { title, description: content, expieration, poll_type:vote_type } = data
     const options = data.option?.join(optionSeparator)
     const res = await createPropose({
       title,
