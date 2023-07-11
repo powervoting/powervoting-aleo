@@ -1,14 +1,7 @@
+import credits.leo;
 
 // The `program` scope defines the data types, functions, and state associated with the `powervoting` program.
-program powervoting.aleo {
-
-    // power voting token
-    record Token {
-        owner: address,
-        name: field,        // token name, power voting token
-        symbol: field,      // token symbol, PVT
-        amount: u64,        // voting power, default is 1u64
-    }
+program power_voting_v0_1.aleo {
 
     // current proposals id, like auto-increament id in mysql  // 2074281269322187893875field => current proposal id
     // use 2074281269322187893875field (means "proposals" in string) as the fixed key here
@@ -52,17 +45,6 @@ program powervoting.aleo {
         withdrawable_block_height: u32, // withdrawable block height
     }
 
-
-    // get power voting token
-    transition mint_token(amount: u64) -> Token {
-        return Token {
-            owner: self.caller,
-            name: 7006912922137281764648909451784002770527598field,   // stands for Power Voting Token string
-            symbol: 5264980field,   // stands for PVT string
-            amount: amount,
-        };
-    }
-
     // get voting power for voting, private action
     transition mint_power() -> Power {
         return Power {
@@ -73,27 +55,26 @@ program powervoting.aleo {
     }
 
     // get voting power for dao management, private action
-    transition mint_power_by_token(token: Token, withdrawable_block_height: u32) -> Power {
-        return Power {
-            owner: self.caller,
-            power: token.amount,
-            withdrawable_block_height: withdrawable_block_height,
-        };
+    transition mint_power_by_credits(credit: credits.leo/credits.record, amount: u64, withdrawable_block_height: u32) 
+        -> (credits.leo/credits.record, credits.leo/credits.record) {
+        return credits.leo/transfer_private(credit, aleo1l44dfmwcu7j2e26yhrlhrxla4lsrmr0rxymxfzxj6h8m2mnegyqs8x0end, amount);
+        // let power: Power = Power {
+        //     owner: self.caller,
+        //     power: amount,
+        //     withdrawable_block_height: withdrawable_block_height,
+        // };
+        // return(power, used_credits, returned_credits);
     }
 
-    // withdraw token from voting power, private action
-    transition withdraw_token_from_power(power: Power) -> Token {
-        return Token {
-            owner: self.caller,
-            name: 7006912922137281764648909451784002770527598field,     // stands for Power Voting Token string
-            symbol: 5264980field,   // stands for PVT string
-            amount: power.power,
-        } then finalize(power);
+    // withdraw token from voting power, private action //todo: update comments
+    transition withdraw_credits_from_power(power: Power, credit: credits.leo/credits.record, amount: u64) 
+        -> (credits.leo/credits.record, credits.leo/credits.record) {
+        return credits.leo/transfer_private(credit, self.caller, amount) then finalize(power.withdrawable_block_height);
     }
 
     // finalize the withdraw feature, if current block height is smaller than power withdrawble_block_height, withdraw will be failed.
-    finalize withdraw_token_from_power(power: Power) {
-        assert(power.withdrawable_block_height <= block.height);
+    finalize withdraw_credits_from_power(withdrawable_block_height: u32) {
+        assert(withdrawable_block_height <= block.height);
     }
 
 
