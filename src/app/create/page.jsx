@@ -6,17 +6,9 @@ import classNames from 'classnames'
 import { useForm, Controller, useFieldArray } from 'react-hook-form'
 import { TrashIcon } from '@heroicons/react/24/outline'
 import { useState } from 'react'
+import { createPropose } from '@/api'
+import { optionSeparator, pollTypes } from '@/util'
 
-const pollTypes = [
-  {
-    label: 'Single Answer',
-    value: 1
-  },
-  {
-    label: 'Multiple Answers',
-    value: 2
-  }
-]
 export default function CreatePage () {
   const {
     register,
@@ -37,7 +29,19 @@ export default function CreatePage () {
       required: true
     }
   })
-  const onSubmit = data => console.log(data)
+  const onSubmit = async data => {
+    console.log(data)
+    const { title, description: content, expieration, vote_type } = data
+    const options = data.option?.join(optionSeparator)
+    const res = await createPropose({
+      title,
+      content,
+      expieration,
+      vote_type,
+      options
+    })
+    console.log({res})
+  }
 
   const list = [
     {
@@ -82,35 +86,18 @@ export default function CreatePage () {
       name: 'Poll Expieraion Time',
       comp: (
         <div className='flex items-center'>
-          <div className='mr-2.5'>
-            <input
-              type='datetime-local'
-              className={classNames(
-                'form-input rounded bg-[#212B3C] border border-[#313D4F] w-[248px]',
-                errors['start_time'] && 'border-red-500 focus:border-red-500'
-              )}
-              placeholder='Pick Date'
-              {...register('start_time', { required: true })}
-            />
-            {errors['start_time'] && (
-              <p className='text-red-500 mt-1'>Please Pick Start Date</p>
+          <input
+            type='datetime-local'
+            className={classNames(
+              'form-input rounded bg-[#212B3C] border border-[#313D4F] w-[248px]',
+              errors['start_time'] && 'border-red-500 focus:border-red-500'
             )}
-          </div>
-
-          <div>
-            <input
-              type='datetime-local'
-              className={classNames(
-                'form-input rounded bg-[#212B3C] border border-[#313D4F] w-[248px]',
-                errors['end_time'] && 'border-red-500 focus:border-red-500'
-              )}
-              placeholder='Pick Date'
-              {...register('end_time', { required: true })}
-            />
-            {errors['end_time'] && (
-              <p className='text-red-500 mt-1'>Please Pick Start Date</p>
-            )}
-          </div>
+            placeholder='Pick Date'
+            {...register('expieration', { required: true })}
+          />
+          {errors['expieration'] && (
+            <p className='text-red-500 mt-1'>Please Pick Expiration Date</p>
+          )}
         </div>
       )
     },

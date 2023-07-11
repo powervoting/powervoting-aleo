@@ -19,3 +19,16 @@ export const shortAddress = (address) => {
     `${address}`.slice(`${address}`.length - 4)
   );
 };
+
+export const optionSeparator = `-&&&&&-`
+
+export const pollTypes = [
+  {
+    label: 'Single Answer',
+    value: 0
+  },
+  {
+    label: 'Multiple Answers',
+    value: 1
+  }
+]
