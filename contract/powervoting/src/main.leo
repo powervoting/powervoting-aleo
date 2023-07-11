@@ -55,9 +55,9 @@ program power_voting_v0_1.aleo {
     }
 
     // get voting power for dao management, private action
-    transition mint_power_by_credits(credits: credits.leo/credits.record, amount: u64, withdrawable_block_height: u32) 
+    transition mint_power_by_credits(credit: credits.leo/credits.record, amount: u64, withdrawable_block_height: u32) 
         -> (credits.leo/credits.record, credits.leo/credits.record) {
-        return credits.leo/transfer_private(credits, aleo1l44dfmwcu7j2e26yhrlhrxla4lsrmr0rxymxfzxj6h8m2mnegyqs8x0end, amount);
+        return credits.leo/transfer_private(credit, aleo1l44dfmwcu7j2e26yhrlhrxla4lsrmr0rxymxfzxj6h8m2mnegyqs8x0end, amount);
         // let power: Power = Power {
         //     owner: self.caller,
         //     power: amount,
@@ -67,9 +67,9 @@ program power_voting_v0_1.aleo {
     }
 
     // withdraw token from voting power, private action //todo: update comments
-    transition withdraw_credits_from_power(power: Power, credits: credits.leo/credits.record, amount: u64) 
+    transition withdraw_credits_from_power(power: Power, credit: credits.leo/credits.record, amount: u64) 
         -> (credits.leo/credits.record, credits.leo/credits.record) {
-        return credits.leo/transfer_private(credits, self.caller, amount) then finalize(power.withdrawable_block_height);
+        return credits.leo/transfer_private(credit, self.caller, amount) then finalize(power.withdrawable_block_height);
     }
 
     // finalize the withdraw feature, if current block height is smaller than power withdrawble_block_height, withdraw will be failed.
