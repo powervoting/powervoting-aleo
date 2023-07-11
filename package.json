@@ -20,6 +20,7 @@
     "next": "latest",
     "postcss": "latest",
     "react": "latest",
+    "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "latest",
     "react-hook-form": "^7.45.0",
     "swr": "latest",
