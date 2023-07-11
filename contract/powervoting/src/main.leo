@@ -55,8 +55,8 @@ program power_voting_v0_1.aleo {
     }
 
     // get voting power for dao management, private action
-    transition mint_power_by_credits(credits: credits.leo/Credits.record, amount: u64, withdrawable_block_height: u32) 
-        -> (credits.leo/Credits.record, credits.leo/Credits.record) {
+    transition mint_power_by_credits(credits: credits.leo/credits.record, amount: u64, withdrawable_block_height: u32) 
+        -> (credits.leo/credits.record, credits.leo/credits.record) {
         return credits.leo/transfer_private(credits, aleo1l44dfmwcu7j2e26yhrlhrxla4lsrmr0rxymxfzxj6h8m2mnegyqs8x0end, amount);
         // let power: Power = Power {
         //     owner: self.caller,
@@ -67,8 +67,8 @@ program power_voting_v0_1.aleo {
     }
 
     // withdraw token from voting power, private action //todo: update comments
-    transition withdraw_credits_from_power(power: Power, credits: credits.leo/Credits.record, amount: u64) 
-        -> (credits.leo/Credits.record, credits.leo/Credits.record) {
+    transition withdraw_credits_from_power(power: Power, credits: credits.leo/credits.record, amount: u64) 
+        -> (credits.leo/credits.record, credits.leo/credits.record) {
         return credits.leo/transfer_private(credits, self.caller, amount) then finalize(power.withdrawable_block_height);
     }
 
