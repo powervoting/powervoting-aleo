@@ -1,3 +1,5 @@
+import bs58 from 'bs58'
+
 export const formatDollar = (value) => {
   const v = Number(value);
   if (Number.isNaN(v)) {
@@ -32,3 +34,7 @@ export const pollTypes = [
     value: 1
   }
 ]
+
+export const encodeBs58 = (str) => {
+  return bs58.encode(new TextEncoder().encode(str))
+}

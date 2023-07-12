@@ -71,7 +71,7 @@ export async function queryRecords(params: QueryRecords): Promise<any> {
   }
 }
 export async function execute(params:Execute):Promise<any>{
-  console.log(params)
+  console.log('execute-->',params)
     try{
       // @ts-ignore
       let executeRes = await window.wallet.features['standard:execute'].execute(params);

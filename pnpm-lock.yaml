@@ -12,6 +12,7 @@ specifiers:
   '@types/react': 18.2.13
   antd: ^5.6.2
   autoprefixer: latest
+  bs58: ^5.0.0
   classnames: latest
   next: latest
   postcss: latest
@@ -33,6 +34,7 @@ dependencies:
   '@tailwindcss/typography': 0.5.9_tailwindcss@3.3.2
   antd: 5.6.2_biqbaboplfbrettd7655fr4n2y
   autoprefixer: 10.4.14_postcss@8.4.25
+  bs58: 5.0.0
   classnames: 2.3.2
   next: 13.4.9_biqbaboplfbrettd7655fr4n2y
   postcss: 8.4.25
@@ -563,6 +565,10 @@ packages:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
     dev: false
 
+  /base-x/4.0.0:
+    resolution: {integrity: sha512-FuwxlW4H5kh37X/oW59pwTzzTKRzfrrQwhmyspRM7swOEZcHtDZSCt45U6oKgtuFE+WYPblePMVIPR4RZrh/hw==}
+    dev: false
+
   /binary-extensions/2.2.0:
     resolution: {integrity: sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==}
     engines: {node: '>=8'}
@@ -591,6 +597,12 @@ packages:
       electron-to-chromium: 1.4.434
       node-releases: 2.0.12
       update-browserslist-db: 1.0.11_browserslist@4.21.9
+    dev: false
+
+  /bs58/5.0.0:
+    resolution: {integrity: sha512-r+ihvQJvahgYT50JD05dyJNKlmmSlMoOGwn1lCcEzanPglg7TxYjioQUYehQ9mAR/+hOSd2jRc/Z2y5UxBymvQ==}
+    dependencies:
+      base-x: 4.0.0
     dev: false
 
   /busboy/1.6.0:
