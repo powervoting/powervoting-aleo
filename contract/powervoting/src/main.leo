@@ -1,7 +1,7 @@
 import credits.leo;
 
 // The `program` scope defines the data types, functions, and state associated with the `powervoting` program.
-program power_voting_v0_1.aleo {
+program power_voting_v0_2.aleo {
 
     // current proposals id, like auto-increament id in mysql  // 2074281269322187893875field => current proposal id
     // use 2074281269322187893875field (means "proposals" in string) as the fixed key here
@@ -29,11 +29,11 @@ program power_voting_v0_1.aleo {
         power: u64,     // voting power
     }
 
-    // votes will be encoded by drand tlock with proposl expieration time, then the encoded hash will be stored into mapping, 
-    // so that everyone can retrieve the encoded votes to count after proposal expieration time. 
+    // votes will be encoded by drand tlock with proposl expieration time, then the encoded hash will be stored into mapping,
+    // so that everyone can retrieve the encoded votes to count after proposal expieration time.
     // pvid (pid append current vote id, e.g. pid-vid) => vote info
     // TODO: use array instead of mapping when possible
-    mapping votes: field => VoteInfo;     
+    mapping votes: field => VoteInfo;
 
     // vote counts       // pid => option counts, append options counts to field, separator: -&&&&&-, e.g. option1-&&&&&-27-&&&&&-option2-&&&&&-15
     mapping counts: u64 => field;
@@ -55,7 +55,7 @@ program power_voting_v0_1.aleo {
     }
 
     // get voting power for dao management, private action
-    transition mint_power_by_credits(credit: credits.leo/credits.record, amount: u64, withdrawable_block_height: u32) 
+    transition mint_power_by_credits(credit: credits.leo/credits.record, amount: u64, withdrawable_block_height: u32)
         -> (credits.leo/credits.record, credits.leo/credits.record) {
         return credits.leo/transfer_private(credit, aleo1l44dfmwcu7j2e26yhrlhrxla4lsrmr0rxymxfzxj6h8m2mnegyqs8x0end, amount);
         // let power: Power = Power {
@@ -67,7 +67,7 @@ program power_voting_v0_1.aleo {
     }
 
     // withdraw token from voting power, private action //todo: update comments
-    transition withdraw_credits_from_power(power: Power, credit: credits.leo/credits.record, amount: u64) 
+    transition withdraw_credits_from_power(power: Power, credit: credits.leo/credits.record, amount: u64)
         -> (credits.leo/credits.record, credits.leo/credits.record) {
         return credits.leo/transfer_private(credit, self.caller, amount) then finalize(power.withdrawable_block_height);
     }
@@ -79,21 +79,21 @@ program power_voting_v0_1.aleo {
 
 
     // propose a new proposal, public action.
-    transition propose(public proposal: Proposal) {
+    transition propose(public title: field, public content: field, public options: field, public vote_type: u8, public expieration: field) {
+        // generate proposal
+        let proposal: Proposal = Proposal {
+            title:title,
+            content:content,
+            options:options,
+            vote_type:vote_type,
+            expieration:expieration,
+        };
         // finalize the proposal.
-        return then finalize(proposal.title, proposal.content, proposal.options, proposal.vote_type, proposal.expieration);
+        return then finalize(proposal);
     }
 
     // store proposal into mapping
-    finalize propose(public title: field, public content: field, public options: field, public vote_type: u8, public expieration: field) {
-        // generate proposal
-        let proposal: Proposal = Proposal {
-            title,
-            content,
-            options,
-            vote_type,
-            expieration,
-        };
+    finalize propose(proposal: Proposal) {
         let proposal_id_key: field = 2074281269322187893875field;   // means "proposals" in string
         // get proposal id or init with 0
         let pid: u64 = Mapping::get_or_use(proposal_ids, proposal_id_key, 0u64);
@@ -139,7 +139,7 @@ program power_voting_v0_1.aleo {
     // pid: proposl id
     // option_counts: option counts, append options counts to field, separator: -&&&&&-, e.g. option1-&&&&&-27-&&&&&-option2-&&&&&-15
     transition count(public pid: u64, public option_counts: field) {
-        return then finalize(pid, option_counts);    
+        return then finalize(pid, option_counts);
     }
 
     // finalize count
