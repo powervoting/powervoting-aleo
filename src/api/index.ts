@@ -1,5 +1,5 @@
 import { execute } from './aleo'
-import { encodeBs58 } from '@/util'
+import { encodeBs58, decodeBs58 } from '@/util'
 const programID = 'power_voting_v0_2.aleo'
 export { execute }
 
@@ -22,8 +22,23 @@ export const createPropose = async ({
     inputs: [[title,'field'],[content, 'field'],[options, 'field'],[vote_type, 'u8'],[expieration, 'field']].map(([value, type]) => ( `${encodeBs58(value)}${type}`)).join(' '),
  })
 }
-
+const fieldLen = 'field'.length
 const idUnitLen = 'u64'.length
+const u8Len = 'u8'.length
+function parseDetail (str: string) {
+    const title = str.match(/title:\s*([\w\d]*)/)?.[1];
+    const content = str.match(/content:\s*([\w\d]*)/)?.[1];
+    const options = str.match(/options:\s*([\w\d]*)/)?.[1];
+    const voteType = str.match(/vote_type:\s*([\w\d]*)/)?.[1];
+    const expiration = str.match(/expieration:\s*([\w\d]*)/)?.[1];
+    return {
+        title: decodeBs58(title?.slice(0, -fieldLen)),
+        content:  decodeBs58(content?.slice(0,-fieldLen)),
+        options:  decodeBs58(options?.slice(0,-fieldLen)),
+        voteType:  decodeBs58(voteType?.slice(0,-u8Len)),
+        expiration:  decodeBs58(expiration?.slice(0,-fieldLen))
+    }
+}
 
 export const getList = async () => {
     const mappingName = 'proposal_ids'
@@ -33,7 +48,7 @@ export const getList = async () => {
     const id = +res.slice(0, -idUnitLen)
     const ids = Array.from({ length: id + 1}, (_, i) => i)
     const details = await Promise.all(ids.map(id => getDetail(id)))
-    const filterDetails = details.filter(Boolean)
+    const filterDetails = details.filter(Boolean).map(parseDetail)
     // console.log({ids, filterDetails})
     return filterDetails
 }

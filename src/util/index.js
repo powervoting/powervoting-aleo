@@ -1,5 +1,3 @@
-import bs58 from 'bs58'
-
 export const formatDollar = (value) => {
   const v = Number(value);
   if (Number.isNaN(v)) {
@@ -47,4 +45,20 @@ export function encodeBs58(input) {
     decodedInt += b;
   }
   return decodedInt.toString();
+}
+
+export function decodeBs58(encodedString) {
+  const n = +encodedString;
+  const int256 = BigInt(256);
+  let decodedString = "";
+  let decodedInt = BigInt(n);
+
+  while (decodedInt > 0n) {
+    const remainder = decodedInt % int256;
+    const char = String.fromCharCode(Number(remainder));
+    decodedString = char + decodedString;
+    decodedInt = (decodedInt - remainder) / int256;
+  }
+
+  return decodedString;
 }
