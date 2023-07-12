@@ -86,7 +86,8 @@ export async function execute(params:Execute):Promise<any>{
       // @ts-ignore
       let executeRes = await window.wallet.features['standard:execute'].execute(params);
       console.log('executeRes--->',executeRes,params);
-      return JSON.parse(executeRes);
+      // return JSON.parse(executeRes);
+      return executeRes
     }catch(e){
       console.log(e)
     }
