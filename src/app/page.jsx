@@ -1,6 +1,8 @@
 'use client'
 import { useState } from 'react'
 import ListFilter from '@/components/ListFilter.jsx'
+import { getList } from '@/api'
+import useSWR from 'swr'
 
 const voteStatusList = [
   {
@@ -55,7 +57,8 @@ const resList = [
 export default function Home () {
   const [voteStatus, setVoteStatus] = useState('')
   const [participate, setParticipate] = useState('')
-
+  const { data, error } = useSWR('/api/home-list', getList)
+  console.log({ data, error })
   return (
     <div className='rounded border border-[#313D4F] bg-[#273141] min-h-[200px]'>
       <div className='flex justify-between px-[30px]'>
