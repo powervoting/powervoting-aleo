@@ -1,6 +1,6 @@
 import { execute } from './aleo'
 import { encodeBs58 } from '@/util'
-const programID = 'power_voting_v0_1.aleo'
+const programID = 'power_voting_v0_2.aleo'
 export { execute }
 
 export const createPropose = async ({

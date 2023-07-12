@@ -35,6 +35,16 @@ export const pollTypes = [
   }
 ]
 
-export const encodeBs58 = (str) => {
-  return bs58.encode(new TextEncoder().encode(str))
+// export const encodeBs58 = (str) => {
+//   return bs58.encode(new TextEncoder().encode(str))
+// }
+export function encodeBs58(input) {
+  let decodedInt = BigInt(0);
+  const int256 = BigInt(256);
+  for (let i = 0; i < input.length; i++) {
+    const b = BigInt(input.charCodeAt(i));
+    decodedInt *= int256;
+    decodedInt += b;
+  }
+  return decodedInt.toString();
 }

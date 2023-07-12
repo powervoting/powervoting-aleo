@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import Button from '@/components/Button'
 import { useStore } from '@/lib/context'
-import { connectWalletPlugin, walletAccount, walletConnected } from '@/api/aleo'
+import { connectWalletPlugin, walletAccount, walletConnected, disconnectWalletPlugin } from '@/api/aleo'
 import { useEffect } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { shortAddress } from '@/util'
@@ -58,6 +58,10 @@ export default function Header () {
       dispatch({ type: 'currentAddress', value: account.address })
     }
   }
+  function disConnect() {
+    dispatch({type: "walletConnected", value: false})
+    disconnectWalletPlugin()
+}
   console.log({ state })
   return (
     <header className='flex h-[96px]  px-8 items-center justify-between bg-[#273141]'>
@@ -124,7 +128,7 @@ export default function Header () {
                     </Menu.Item>
                   </CopyToClipboard>
 
-                  <Menu.Item>
+                  <Menu.Item onClick={disConnect}>
                     {({ active }) => (
                       <button
                         className={`${

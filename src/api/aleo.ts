@@ -10,6 +10,16 @@ export async function connectWalletPlugin(): Promise<ConnectData> {
   return account
 }
 
+export async function disconnectWalletPlugin(): Promise<void> {
+  console.log("xxxxx")
+  // @ts-ignore
+  let result = await window.wallet.features[ 'standard:cancelPre'].cancelPre();
+  console.log(result);
+
+  // @ts-ignore
+  await window.wallet.features['standard:disConnect'].disConnect();
+}
+
 /**
  * 钱包是否连接
  */
