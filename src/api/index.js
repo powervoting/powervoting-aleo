@@ -49,8 +49,22 @@ export const getList = async () => {
   const res = await fetch(api).then((res) => res.json());
   const id = +res.slice(0, -idUnitLen);
   const ids = Array.from({ length: id + 1 }, (_, i) => i);
-  const details = await Promise.all(ids.map((id) => getDetail(id)));
-  const filterDetails = details.filter(Boolean).map(parseDetail);
+  const details = await Promise.all(
+    ids.map(
+      (id) =>
+        new Promise((r) => {
+          getDetail(id).then((detail) => r({ detail, id }));
+        })
+    )
+  );
+  const filterDetails = details
+    .filter((v) => Boolean(v.detail))
+    .map((v) => {
+      return {
+        ...parseDetail(v.detail),
+        id,
+      };
+    });
   return filterDetails;
 };
 

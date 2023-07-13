@@ -4,7 +4,12 @@ import Image from 'next/image'
 import Link from 'next/link'
 import Button from '@/components/Button'
 import { useStore } from '@/lib/context'
-import { connectWalletPlugin, walletAccount, walletConnected, disconnectWalletPlugin } from '@/api/aleo'
+import {
+  connectWalletPlugin,
+  walletAccount,
+  walletConnected,
+  disconnectWalletPlugin
+} from '@/api/aleo'
 import { useEffect } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { shortAddress } from '@/util'
@@ -28,13 +33,16 @@ export default function Header () {
   const [state, dispatch] = useStore()
 
   useEffect(() => {
-    if (hasWallet()) {
-      connectWallet()
+    connectWallet()
+    window.addEventListener('focus', connectWallet)
+    return () => {
+      window.removeEventListener('focus', connectWallet)
     }
-    // @ts-ignore
   }, [])
 
   async function connectWallet () {
+    console.log("try to connect")
+    if (!hasWallet()) return
     let isConnect = walletConnected()
     console.log(isConnect)
     dispatch({ type: 'walletConnected', value: isConnect })
@@ -58,10 +66,10 @@ export default function Header () {
       dispatch({ type: 'currentAddress', value: account.address })
     }
   }
-  function disConnect() {
-    dispatch({type: "walletConnected", value: false})
+  function disConnect () {
+    dispatch({ type: 'walletConnected', value: false })
     disconnectWalletPlugin()
-}
+  }
   console.log({ state })
   return (
     <header className='flex h-[96px]  px-8 items-center justify-between bg-[#273141]'>
@@ -144,12 +152,7 @@ export default function Header () {
             </Transition>
           </Menu>
         ) : (
-          <Button
-            type='primary'
-            onClick={() => {
-              hasWallet() && connectWallet()
-            }}
-          >
+          <Button type='primary' onClick={connectWallet}>
             Connect Wallet
           </Button>
         )}
