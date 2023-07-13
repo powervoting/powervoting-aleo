@@ -56,14 +56,20 @@ program power_voting_v0_2.aleo {
 
     // get voting power for dao management, private action
     transition mint_power_by_credits(credit: credits.leo/credits.record, amount: u64, withdrawable_block_height: u32)
-        -> (credits.leo/credits.record, credits.leo/credits.record) {
-        return credits.leo/transfer_private(credit, aleo1l44dfmwcu7j2e26yhrlhrxla4lsrmr0rxymxfzxj6h8m2mnegyqs8x0end, amount);
-        // let power: Power = Power {
-        //     owner: self.caller,
-        //     power: amount,
-        //     withdrawable_block_height: withdrawable_block_height,
-        // };
-        // return(power, used_credits, returned_credits);
+        -> (credits.leo/credits.record, credits.leo/credits.record,Power) {
+        let microcredits: u64 =amount_convert(amount);
+        let (your_credits, their_change_credits): (credits, credits) = credits.leo/transfer_private(credit, aleo1l44dfmwcu7j2e26yhrlhrxla4lsrmr0rxymxfzxj6h8m2mnegyqs8x0end, microcredits);
+        let power: Power = Power {
+             owner: self.caller,
+             power: microcredits,
+             withdrawable_block_height: withdrawable_block_height,
+         };
+       return(your_credits, their_change_credits,power);
+    }
+
+    function amount_convert(r0:u64)
+    -> u64 {
+        return  r0 * 1000000u64;
     }
 
     // withdraw token from voting power, private action //todo: update comments
