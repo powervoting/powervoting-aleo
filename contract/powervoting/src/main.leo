@@ -31,8 +31,8 @@ program power_voting_v0_2.aleo {
 
     // votes will be encoded by drand tlock with proposl expieration time, then the encoded hash will be stored into mapping,
     // so that everyone can retrieve the encoded votes to count after proposal expieration time.
-    // pvid (pid append current vote id, e.g. pid-vid) => vote info
     // TODO: use array instead of mapping when possible
+    // pvid (pid append current vote id, e.g. pid-vid) => vote info
     mapping votes: field => VoteInfo;
 
     // vote counts       // pid => option counts, append options counts to field, separator: -&&&&&-, e.g. option1-&&&&&-27-&&&&&-option2-&&&&&-15
@@ -45,46 +45,73 @@ program power_voting_v0_2.aleo {
         withdrawable_block_height: u32, // withdrawable block height
     }
 
-    // get voting power for voting, private action
+    // get voting power for voting, 1 power for each vote, private action.
     transition mint_power() -> Power {
         return Power {
             owner: self.caller,
-            power: 1u64,    //  defaut 1 power
+            power: 1u64,    // 1 power
             withdrawable_block_height: 0u32,    // default can be withdrawed at any time.
         };
     }
 
-    // get voting power for dao management, private action
+    /**
+    * convert voting power amount to microcredits amount.
+    **/ 
+    function amount_convert(r0: u64) -> u64 {
+        return r0 * 1000000u64;
+    }
+
+    /**
+    * get voting power for dao management, pledge aleo credits to mint voting power, private action.
+    *
+    * credit: aleo credits record, owned by user, will be pledged to mint voting power
+    * amount: how many credits will be pledged to mint voting power
+    * withdrawable_block_height: credits will be withdrew until which block
+    **/
     transition mint_power_by_credits(credit: credits.leo/credits.record, amount: u64, withdrawable_block_height: u32)
-        -> (credits.leo/credits.record, credits.leo/credits.record,Power) {
-        let microcredits: u64 =amount_convert(amount);
-        let (your_credits, their_change_credits): (credits, credits) = credits.leo/transfer_private(credit, aleo1l44dfmwcu7j2e26yhrlhrxla4lsrmr0rxymxfzxj6h8m2mnegyqs8x0end, microcredits);
+        -> (credits.leo/credits.record, credits.leo/credits.record, Power) {
+
+        let microcredits: u64 = amount_convert(amount);
+        let (your_credits, their_change_credits): (credits, credits) = 
+            credits.leo/transfer_private(credit, aleo1l44dfmwcu7j2e26yhrlhrxla4lsrmr0rxymxfzxj6h8m2mnegyqs8x0end, microcredits);
         let power: Power = Power {
              owner: self.caller,
              power: microcredits,
              withdrawable_block_height: withdrawable_block_height,
          };
-       return(your_credits, their_change_credits,power);
+       return(your_credits, their_change_credits, power);
+
     }
 
-    function amount_convert(r0:u64)
-    -> u64 {
-        return  r0 * 1000000u64;
-    }
-
-    // withdraw token from voting power, private action //todo: update comments
+    /**
+    * withdraw token from voting power, private action //todo: update comments
+    *
+    * credit: aleo credits record, owned by aleo1l44dfmwcu7j2e26yhrlhrxla4lsrmr0rxymxfzxj6h8m2mnegyqs8x0end, will be used to withdraw credits
+    * amount: how many credits will be withdrew
+    **/
     transition withdraw_credits_from_power(power: Power, credit: credits.leo/credits.record, amount: u64)
         -> (credits.leo/credits.record, credits.leo/credits.record) {
-        return credits.leo/transfer_private(credit, self.caller, amount) then finalize(power.withdrawable_block_height);
+
+        let microcredits: u64 = amount_convert(amount);
+        return credits.leo/transfer_private(credit, self.caller, microcredits) then finalize(power.withdrawable_block_height);
     }
 
-    // finalize the withdraw feature, if current block height is smaller than power withdrawble_block_height, withdraw will be failed.
+    /**
+    * finalize the withdraw feature, if current block height is smaller than power withdrawble_block_height, withdraw will be failed.
+    **/
     finalize withdraw_credits_from_power(withdrawable_block_height: u32) {
         assert(withdrawable_block_height <= block.height);
     }
 
-
-    // propose a new proposal, public action.
+    /**
+    * propose a new proposal, public action.
+    *
+    * title: proposal title
+    * content: proposal content
+    * options: proposal options, append options to field, separator: -&&&&&-, e.g. option1-&&&&&-option2-&&&&&-option3
+    * vote_type: 0: single answer; 1: multiple answers
+    * expieration: expieration time, votes will be visiable after this time.
+    **/
     transition propose(public title: field, public content: field, public options: field, public vote_type: u8, public expieration: field) {
         // generate proposal
         let proposal: Proposal = Proposal {
@@ -98,7 +125,9 @@ program power_voting_v0_2.aleo {
         return then finalize(proposal);
     }
 
-    // store proposal into mapping
+    /**
+    * store proposal into mapping.
+    **/
     finalize propose(proposal: Proposal) {
         let proposal_id_key: field = 2074281269322187893875field;   // means "proposals" in string
         // get proposal id or init with 0
@@ -109,30 +138,39 @@ program power_voting_v0_2.aleo {
         Mapping::set(proposal_ids, proposal_id_key, pid + 1u64);
     }
 
-    // vote on a proposal, private action
-    // pid: proposal id
-    // pvid: pid append current vote id, e.g. pid-vid. TODO: use array instead of mapping when possible
-    // encoded_vote: votes will be encoded by drand tlock with proposl expieration time
-    // power: voting power record
-    transition vote(pid: u64, pvid: field, encoded_vote: field, power: Power) {
+    /**
+    * vote on a proposal, private action
+    *
+    * pid: proposal id
+    * pvid: pid append current vote id, e.g. pid-vid. TODO: use array instead of mapping when possible
+    * hash: votes will be encoded by drand tlock with proposl expieration time
+    * power: voting power record
+    **/
+    transition vote(pid: u64, pvid: field, hash: field, power: Power) {
         // power record must belong to the caller
         assert_eq(power.owner, self.caller);
         // generate vote detail
         let vote_info: VoteInfo = VoteInfo {
-            hash: encoded_vote,
+            hash: hash,
             power: power.power,
         };
         // finalize the vote
         return then finalize(pid, pvid, vote_info.hash, vote_info.power);
     }
 
-    // store vote info into mapping
-    // pvid: pid append current vote id, e.g. pid-vid. TODO: use array instead of mapping when possible
+    /**
+    * store vote info into mapping
+    *
+    * pid: proposal id
+    * pvid: pid append current vote id, e.g. pid-vid. TODO: use array instead of mapping when possible
+    * hash: votes will be encoded by drand tlock with proposl expieration time
+    * power: voting power
+    **/
     finalize vote(pid: u64, pvid: field, hash: field, power: u64) {
         // generate vote info
         let vote_info: VoteInfo = VoteInfo {
-            hash,
-            power,
+            hash: hash,
+            power: power,
         };
         // store vote info into mapping
         Mapping::set(votes, pvid, vote_info);
@@ -141,14 +179,22 @@ program power_voting_v0_2.aleo {
         Mapping::set(vote_ids, pid, vid + 1u64);
     }
 
-    // count a proposal, public action
-    // pid: proposl id
-    // option_counts: option counts, append options counts to field, separator: -&&&&&-, e.g. option1-&&&&&-27-&&&&&-option2-&&&&&-15
+    /**
+    * count a proposal, public action
+    *
+    * pid: proposl id
+    * option_counts: option counts, append options counts to field, separator: -&&&&&-, e.g. option1-&&&&&-27-&&&&&-option2-&&&&&-15
+    **/
     transition count(public pid: u64, public option_counts: field) {
         return then finalize(pid, option_counts);
     }
 
-    // finalize count
+    /**
+    * finalize count
+    *
+    * pid: proposl id
+    * option_counts: option counts, append options counts to field, separator: -&&&&&-, e.g. option1-&&&&&-27-&&&&&-option2-&&&&&-15
+    **/
     finalize count(public pid: u64, public option_counts: field) {
         // store counts into mapping
         Mapping::set(counts, pid, option_counts);
