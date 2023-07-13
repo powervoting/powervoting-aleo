@@ -32,11 +32,11 @@ function parseDetail (str: string) {
     const voteType = str.match(/vote_type:\s*([\w\d]*)/)?.[1];
     const expiration = str.match(/expieration:\s*([\w\d]*)/)?.[1];
     return {
-        title: decodeBs58(title?.slice(0, -fieldLen)),
-        content:  decodeBs58(content?.slice(0,-fieldLen)),
-        options:  decodeBs58(options?.slice(0,-fieldLen)),
-        voteType:  decodeBs58(voteType?.slice(0,-u8Len)),
-        expiration:  decodeBs58(expiration?.slice(0,-fieldLen))
+        // title: decodeBs58(title?.slice(0, -fieldLen)),
+        // content:  decodeBs58(content?.slice(0,-fieldLen)),
+        // options:  decodeBs58(options?.slice(0,-fieldLen)),
+        // voteType:  decodeBs58(voteType?.slice(0,-u8Len)),
+        // expiration:  decodeBs58(expiration?.slice(0,-fieldLen))
     }
 }
 
