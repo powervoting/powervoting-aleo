@@ -1,22 +1,15 @@
-import {AccountData, ConnectData, DecryptRecordData, Execute, QueryRecords, RecordData, Sign, Transfer} from "./type";
 
 /**
  * 连接钱包 返回 账户
  * @constructor
  */
-export async function connectWalletPlugin(): Promise<ConnectData> {
-  // @ts-ignore
+export async function connectWalletPlugin(){
   let account = await window.wallet.features['standard:connect'].connect()
   return account
 }
 
-export async function disconnectWalletPlugin(): Promise<void> {
-  console.log("xxxxx")
-  // @ts-ignore
-  let result = await window.wallet.features[ 'standard:cancelPre'].cancelPre();
-  console.log(result);
-
-  // @ts-ignore
+export async function disconnectWalletPlugin(){
+  await window.wallet.features[ 'standard:cancelPre'].cancelPre();
   await window.wallet.features['standard:disConnect'].disConnect();
 }
 
@@ -24,13 +17,11 @@ export async function disconnectWalletPlugin(): Promise<void> {
  * 钱包是否连接
  */
 export function walletConnected() {
-  // @ts-ignore
   let connected = window.wallet.connected
   return connected
 }
 
-export function walletAccount(): Promise<AccountData> {
-  // @ts-ignore
+export function walletAccount() {
   let accounts = window.wallet.accounts
   return accounts
 }
@@ -39,54 +30,44 @@ export function walletAccount(): Promise<AccountData> {
  * 解密record 返回 解密后的数据
  * @param record
  */
-export async function decryptRecord(record: string): Promise<DecryptRecordData[]> {
+export async function decryptRecord(record){
   try {
-    let records = [] as string[]
+    let records = [] 
     records.unshift(record)
-    // @ts-ignore
     let recordData = await window.wallet.features['standard:decrypt'].decrypt(records)
     return recordData.result
   } catch (e) {
-    return [] as DecryptRecordData[]
+    return []
   }
 }
-export async function transfer(params: Transfer): Promise<any> {
+export async function transfer(params){
   try {
-    // @ts-ignore
     let transferRes = await window.wallet.features['standard:transfer'].transfer(params);
     return transferRes;
   } catch (e) {
     return "";
   }
 };
-export async function sign(params: Sign): Promise<any> {
+export async function sign(params) {
   try {
-    // @ts-ignore
     let signResult = await window.wallet.features['standard:sign'].sign(params);
-    console.log(signResult);
     return JSON.parse(signResult);
   } catch (e) {
     return "";
   }
 }
 
-export async function queryRecords(params: QueryRecords): Promise<any> {
+export async function queryRecords(params){
   try {
-    // @ts-ignore
     let signResult = await window.wallet.features['standard:records'].sign(params);
-    console.log(signResult);
     return JSON.parse(signResult);
   } catch (e) {
     return "";
   }
 }
-export async function execute(params:Execute):Promise<any>{
-  console.log('execute-->',params)
+export async function execute(params){
     try{
-      // @ts-ignore
       let executeRes = await window.wallet.features['standard:execute'].execute(params);
-      console.log('executeRes--->',executeRes,params);
-      // return JSON.parse(executeRes);
       return executeRes
     }catch(e){
       console.log(e)

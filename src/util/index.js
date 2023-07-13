@@ -13,11 +13,7 @@ export const decodeBs58 = (int) => {
   const str = base58ToString(bs58str);
   return str;
 };
-// console.log(
-//   "decodeBs58->",
-//   decodeBs58("334293052093172934233615438351426228415456219217055")
-// );
-// console.log("encodeBs58->", encodeBs58("今天下雨了么？"));
+
 function intToBase58(int) {
   let base58 = "";
   while (int > 0n) {
@@ -29,7 +25,6 @@ function intToBase58(int) {
 }
 
 function base58ToInt(base58) {
-  // here some error
   return base58
     .split("")
     .reverse()
@@ -50,11 +45,6 @@ function stringToBase58(str) {
   return bs58.encode(bytes);
 }
 
-// 今天下雨了么？-> base58string encode-> F4n5FmCWFukqSPjZZ47S1RKpq9kLe
-// F4n5FmCWFukqSPjZZ47S1RKpq9kLe -> base58int encode -> 334293052093172934233615438351426228415456219217055
-
-//334293052093172934233615438351426228415456219217055 ->base58int decode -> F4n5FmCWFukqSPjZZ47S1RKpq9kLe
-// F4n5FmCWFukqSPjZZ47S1RKpq9kLe -> base58string decode -> 今天下雨了么？
 
 export const formatDollar = (value) => {
   const v = Number(value);
