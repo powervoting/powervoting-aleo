@@ -22,11 +22,11 @@ const optionsList = [
   }
 ]
 
-export default function Voting ({  }) {
+export default function Voting ({}) {
   const params = useSearchParams()
   const [loading, setLoading] = useState(false)
   const voteType = 2
-
+  console.log({ params })
   const {
     register,
     handleSubmit,
@@ -88,10 +88,7 @@ export default function Voting ({  }) {
               control={control}
               render={({ field: { onChange, value } }) => {
                 return (
-                  <RadioGroup
-                    value={value}
-                    onChange={onChange}
-                  >
+                  <RadioGroup value={value} onChange={onChange}>
                     {optionsList.map(item => (
                       <RadioGroup.Option
                         key={item.optionName}

@@ -2,8 +2,10 @@
 import Table from '@/components/Table'
 import { useSearchParams } from 'next/navigation'
 
-export default function ViewPoll ({  }) {
+export default function ViewPoll ({}) {
   const params = useSearchParams()
+  const id = params.get('id')
+
   const optionsList = [
     {
       optionName: 'OPTION 1',
@@ -37,19 +39,23 @@ export default function ViewPoll ({  }) {
         <div>
           <h3 className='mb-6'>Total 15 votes</h3>
           <div className='space-y-4'>
-            {optionsList.map((item) => {
-              return <div className='flex items-center' key={item.optionName}>
-                <div className='max-w-[120px] truncate'>{item.optionName}</div>
-                <div className='mx-5 relative w-[400px] h-2 rounded bg-[#1B2331]'>
-                  <div
-                    className='absolute top-0 left-0 h-full rounded bg-[#1975D1]'
-                    style={{
-                      width: `${(item.voteCount / totalVoteCount) * 100}%`
-                    }}
-                  ></div>
+            {optionsList.map(item => {
+              return (
+                <div className='flex items-center' key={item.optionName}>
+                  <div className='max-w-[120px] truncate'>
+                    {item.optionName}
+                  </div>
+                  <div className='mx-5 relative w-[400px] h-2 rounded bg-[#1B2331]'>
+                    <div
+                      className='absolute top-0 left-0 h-full rounded bg-[#1975D1]'
+                      style={{
+                        width: `${(item.voteCount / totalVoteCount) * 100}%`
+                      }}
+                    ></div>
+                  </div>
+                  <div>{item.voteCount} votes</div>
                 </div>
-                <div>{item.voteCount} votes</div>
-              </div>
+              )
             })}
           </div>
         </div>

@@ -49,7 +49,7 @@ export const getList = async () => {
   const api = `https://vm.aleo.org/api/testnet3/program/${programID}/mapping/${mappingName}/${key}`;
   const res = await fetch(api).then((res) => res.json());
   const id = +res.slice(0, -idUnitLen);
-  const ids = Array.from({ length: id + 1 }, (_, i) => i);
+  const ids = Array.from({ length: id }, (_, i) => i);
   const details = await Promise.all(
     ids.map(
       (id) =>

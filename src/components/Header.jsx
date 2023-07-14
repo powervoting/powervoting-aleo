@@ -8,26 +8,32 @@ import { CopyToClipboard } from 'react-copy-to-clipboard'
 import useSWR, { mutate } from 'swr'
 import aleoFetcher from '@/fetcher/aleo'
 import { useState } from 'react'
+import { usePathname } from 'next/navigation'
+import classNames from 'classnames'
 
 const links = [
   {
     name: 'Voting',
-    href: 'dao-mint-nft'
+    href: '/'
   },
   {
     name: 'DAO Governance',
-    href: 'power-voting-dao'
+    href: '/dao-governance/'
   }
 ]
 
 export default function Header () {
-  const { data: walletAccount, mutate: walletAccountMutate } = useSWR('walletAccount', aleoFetcher)
+  const pathname = usePathname()
+  const { data: walletAccount, mutate: walletAccountMutate } = useSWR(
+    'walletAccount',
+    aleoFetcher
+  )
   const { data: walletConnected } = useSWR('walletConnected', aleoFetcher)
-  const [ autoConnect, setAutoConnect ] = useState(true)
+  const [autoConnect, setAutoConnect] = useState(true)
 
   useEffect(() => {
     const focusHandle = () => {
-      if(!walletConnected && autoConnect) {
+      if (!walletConnected && autoConnect) {
         aleoFetcher('connect').then(walletAccountMutate)
         setAutoConnect(false)
       }
@@ -37,24 +43,39 @@ export default function Header () {
     // return () => {
     //   globalThis.removeEventListener('focus', focusHandle)
     // }
-  }, [ walletConnected, autoConnect ])
+  }, [walletConnected, autoConnect])
 
   return (
     <header className='flex h-[96px]  px-8 items-center justify-between bg-[#273141]'>
       <div className='flex items-center'>
         <div className='flex-shrink-0'>
           <Link href='/'>
-            <img className='h-[64px] w-auto' src='/images/logo.png' alt='power voting logo' />
+            <img
+              className='h-[64px] w-auto'
+              src='/images/logo.png'
+              alt='power voting logo'
+            />
           </Link>
         </div>
         <div className='ml-20 flex items-baseline space-x-20'>
           {links.map((link, index) => {
+            const isActive = pathname === link.href
             return (
               <Link
                 key={link.name}
                 href={link.href}
-                className='text-2xl text-[#7F8FA3] hover:opacity-80'
+                className={classNames(
+                  'text-2xl hover:opacity-80 relative',
+                  isActive ? 'text-white' : 'text-[#7F8FA3] '
+                )}
               >
+                {isActive && (
+                  <div className='absolute -bottom-3 left-1/2 transform -translate-x-1/2 flex w-8 justify-between'>
+                    <i className='w-1.5 h-1.5 rounded-full bg-[#2DA1F7]' />
+                    <i className='w-1.5 h-1.5 rounded-full bg-[#2DA1F7]' />
+                    <i className='w-1.5 h-1.5 rounded-full bg-[#2DA1F7]' />
+                  </div>
+                )}
                 {link.name}
               </Link>
             )
@@ -104,11 +125,13 @@ export default function Header () {
                     </Menu.Item>
                   </CopyToClipboard>
 
-                  <Menu.Item onClick={ async () => {
-                    await aleoFetcher('cancelPre')
-                    await aleoFetcher('disConnect')
-                    walletAccountMutate([])
-                  } }>
+                  <Menu.Item
+                    onClick={async () => {
+                      await aleoFetcher('cancelPre')
+                      await aleoFetcher('disConnect')
+                      walletAccountMutate([])
+                    }}
+                  >
                     {({ active }) => (
                       <button
                         className={`${
@@ -124,9 +147,12 @@ export default function Header () {
             </Transition>
           </Menu>
         ) : (
-          <Button type='primary' onClick={ () => {
-            aleoFetcher('connect').then(walletAccountMutate)
-          } }>
+          <Button
+            type='primary'
+            onClick={() => {
+              aleoFetcher('connect').then(walletAccountMutate)
+            }}
+          >
             Connect Wallet
           </Button>
         )}
