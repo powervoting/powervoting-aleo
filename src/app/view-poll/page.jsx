@@ -1,7 +1,9 @@
 'use client'
 import Table from '@/components/Table'
+import { useSearchParams } from 'next/navigation'
 
-export default function ViewPoll ({ params }) {
+export default function ViewPoll ({  }) {
+  const params = useSearchParams()
   const optionsList = [
     {
       optionName: 'OPTION 1',

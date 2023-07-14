@@ -5,6 +5,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { useState } from 'react'
 import { RadioGroup } from '@headlessui/react'
 import classNames from 'classnames'
+import { useSearchParams } from 'next/navigation'
 
 const optionsList = [
   {
@@ -21,7 +22,8 @@ const optionsList = [
   }
 ]
 
-export default function Voting ({ params }) {
+export default function Voting ({  }) {
+  const params = useSearchParams()
   const [loading, setLoading] = useState(false)
   const voteType = 2
 
