@@ -13,6 +13,7 @@ export const createPropose = async ({
   return await execute({
     programID,
     functionName: "propose",
+    fee: 1000,
     inputs: [
       [title, "field"],
       [content, "field"],

@@ -2,6 +2,14 @@ import credits.leo;
 
 // The `program` scope defines the data types, functions, and state associated with the `powervoting` program.
 program power_voting_v0_2.aleo {
+    
+    // power voting token
+    record PVToken {
+        owner: address,
+        name: field,        // token name, power voting token
+        symbol: field,      // token symbol, PVT
+        amount: u64,        // voting power, default is 1u64
+    }
 
     // current proposals id, like auto-increament id in mysql  // 2074281269322187893875field => current proposal id
     // use 2074281269322187893875field (means "proposals" in string) as the fixed key here
@@ -45,6 +53,16 @@ program power_voting_v0_2.aleo {
         withdrawable_block_height: u32, // withdrawable block height
     }
 
+    // get power voting token
+    transition mint_token(amount: u64) -> PVToken {
+        return PVToken {
+            owner: self.caller,
+            name: 7006912922137281764648909451784002770527598field,   // stands for Power Voting Token string
+            symbol: 5264980field,   // stands for PVT string
+            amount: amount,
+        };
+    }
+
     // get voting power for voting, 1 power for each vote, private action.
     transition mint_power() -> Power {
         return Power {
@@ -53,6 +71,42 @@ program power_voting_v0_2.aleo {
             withdrawable_block_height: 0u32,    // default can be withdrawed at any time.
         };
     }
+
+    /**
+    * get voting power for dao management, private action
+    *
+    * token: PVT token
+    * withdrawable_block_height: credits will be withdrew until which block
+    **/
+    transition mint_power_by_token(pvtoken: PVToken, withdrawable_block_height: u32) -> Power {
+        //pvtoken will be used automatically after mint_power_by_token called
+        return Power {
+            owner: self.caller,
+            power: pvtoken.amount,
+            withdrawable_block_height: withdrawable_block_height,
+        };
+    }
+
+    /**
+    * withdraw token from voting power, private action
+    * 
+    * power: voting power
+    **/
+    transition withdraw_token_from_power(power: Power) -> PVToken {
+        //generate a new PVToken when withdraw
+        return PVToken {
+            owner: self.caller,
+            name: 7006912922137281764648909451784002770527598field,     // stands for Power Voting Token string
+            symbol: 5264980field,   // stands for PVT string
+            amount: power.power,
+        } then finalize(power);
+    }
+
+    // finalize the withdraw feature, if current block height is smaller than power withdrawble_block_height, withdraw will be failed.
+    finalize withdraw_token_from_power(power: Power) {
+        assert(power.withdrawable_block_height <= block.height);
+    }
+
 
     /**
     * convert voting power amount to microcredits amount.

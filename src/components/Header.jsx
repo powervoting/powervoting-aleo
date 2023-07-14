@@ -1,82 +1,50 @@
 'use client'
-import logo from '@/public/images/logo.png'
-import Image from 'next/image'
 import Link from 'next/link'
 import Button from '@/components/Button'
-import { useStore } from '@/lib/context'
-import {
-  connectWalletPlugin,
-  walletAccount,
-  walletConnected,
-  disconnectWalletPlugin
-} from '@/api/aleo'
 import { useEffect } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { shortAddress } from '@/util'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
+import useSWR, { mutate } from 'swr'
+import aleoFetcher from '@/fetcher/aleo'
+import { useState } from 'react'
 
 const links = [
   {
     name: 'Voting',
-    href: 'voting'
+    href: 'dao-mint-nft'
   },
   {
     name: 'DAO Governance',
-    href: 'dao-governance'
+    href: 'power-voting-dao'
   }
 ]
-function hasWallet () {
-  return window && window.wallet
-}
 
 export default function Header () {
-  const [state, dispatch] = useStore()
+  const { data: walletAccount, mutate: walletAccountMutate } = useSWR('walletAccount', aleoFetcher)
+  const { data: walletConnected } = useSWR('walletConnected', aleoFetcher)
+  const [ autoConnect, setAutoConnect ] = useState(true)
 
   useEffect(() => {
-    connectWallet()
-    window.addEventListener('focus', connectWallet)
-    return () => {
-      window.removeEventListener('focus', connectWallet)
+    const focusHandle = () => {
+      if(!walletConnected && autoConnect) {
+        aleoFetcher('connect').then(walletAccountMutate)
+        setAutoConnect(false)
+      }
     }
-  }, [])
+    focusHandle()
+    // globalThis.addEventListener('focus', focusHandle)
+    // return () => {
+    //   globalThis.removeEventListener('focus', focusHandle)
+    // }
+  }, [ walletConnected, autoConnect ])
 
-  async function connectWallet () {
-    console.log("try to connect")
-    if (!hasWallet()) return
-    let isConnect = walletConnected()
-    console.log(isConnect)
-    dispatch({ type: 'walletConnected', value: isConnect })
-    if (isConnect) {
-      setAddressData()
-      return
-    }
-    await connectWalletPlugin()
-    if (await walletConnected()) {
-      dispatch({ type: 'walletConnected', value: true })
-      setAddressData()
-    } else {
-      dispatch({ type: 'currentAddress', value: '' })
-    }
-  }
-
-  async function setAddressData () {
-    let account = await walletAccount()
-    console.log(account)
-    if (account && account.address) {
-      dispatch({ type: 'currentAddress', value: account.address })
-    }
-  }
-  function disConnect () {
-    dispatch({ type: 'walletConnected', value: false })
-    disconnectWalletPlugin()
-  }
-  console.log({ state })
   return (
     <header className='flex h-[96px]  px-8 items-center justify-between bg-[#273141]'>
       <div className='flex items-center'>
         <div className='flex-shrink-0'>
           <Link href='/'>
-            <Image height={64} src={logo} alt='power voting logo' />
+            <img className='h-[64px] w-auto' src='/images/logo.png' alt='power voting logo' />
           </Link>
         </div>
         <div className='ml-20 flex items-baseline space-x-20'>
@@ -98,17 +66,17 @@ export default function Header () {
           <Button type='primary'>Create A Poll</Button>
         </Link>
 
-        {state.currentAddress ? (
+        {walletAccount?.address ? (
           <Menu>
             <Menu.Button>
               <span className='inline-block rounded hover:opacity-80 py-4 px-8 text-xl bg-[#1991EB] text-[#fff]'>
-                {shortAddress(state.currentAddress)}
+                {shortAddress(walletAccount.address)}
               </span>
             </Menu.Button>
             <Transition
               enter='transition ease-out duration-100'
               enterFrom='transform opacity-0 scale-95'
-              enterTo='transform opacity-100 scale-100'
+              enterTo='transform opacity-100 scale-100 relative z-10'
               leave='transition ease-in duration-75'
               leaveFrom='transform opacity-100 scale-100'
               leaveTo='transform opacity-0 scale-95'
@@ -116,7 +84,7 @@ export default function Header () {
               <Menu.Items className='absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
                 <div className='px-1 py-1 '>
                   <CopyToClipboard
-                    text={state.currentAddress}
+                    text={walletAccount.address}
                     onCopy={() => {
                       console.log('X')
                     }}
@@ -136,7 +104,11 @@ export default function Header () {
                     </Menu.Item>
                   </CopyToClipboard>
 
-                  <Menu.Item onClick={disConnect}>
+                  <Menu.Item onClick={ async () => {
+                    await aleoFetcher('cancelPre')
+                    await aleoFetcher('disConnect')
+                    walletAccountMutate([])
+                  } }>
                     {({ active }) => (
                       <button
                         className={`${
@@ -152,7 +124,9 @@ export default function Header () {
             </Transition>
           </Menu>
         ) : (
-          <Button type='primary' onClick={connectWallet}>
+          <Button type='primary' onClick={ () => {
+            aleoFetcher('connect').then(walletAccountMutate)
+          } }>
             Connect Wallet
           </Button>
         )}

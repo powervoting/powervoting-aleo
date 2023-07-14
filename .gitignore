@@ -3,3 +3,6 @@ node_modules
 .vscode
 .idea
 .DS_Store
+
+# 钱包地址
+/dist 
