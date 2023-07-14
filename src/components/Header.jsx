@@ -41,7 +41,7 @@ export default function Header () {
   }, [])
 
   async function connectWallet () {
-    console.log("try to connect")
+    console.log('try to connect')
     if (!hasWallet()) return
     let isConnect = walletConnected()
     console.log(isConnect)
@@ -108,7 +108,7 @@ export default function Header () {
             <Transition
               enter='transition ease-out duration-100'
               enterFrom='transform opacity-0 scale-95'
-              enterTo='transform opacity-100 scale-100'
+              enterTo='transform opacity-100 scale-100 relative z-10'
               leave='transition ease-in duration-75'
               leaveFrom='transform opacity-100 scale-100'
               leaveTo='transform opacity-0 scale-95'
