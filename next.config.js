@@ -1,3 +1,4 @@
 module.exports = {
-  output: 'export'
+  output: 'export',
+  exportTrailingSlash: true
 }
