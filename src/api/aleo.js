@@ -67,6 +67,7 @@ export async function queryRecords(params){
 }
 export async function execute(params){
     try{
+      console.log("execute", params)
       let executeRes = await window.wallet.features['standard:execute'].execute(params);
       return executeRes
     }catch(e){

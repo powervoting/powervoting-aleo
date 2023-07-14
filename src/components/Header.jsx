@@ -18,11 +18,11 @@ import { CopyToClipboard } from 'react-copy-to-clipboard'
 const links = [
   {
     name: 'Voting',
-    href: 'voting'
+    href: 'dao-mint-nft'
   },
   {
     name: 'DAO Governance',
-    href: 'dao-governance'
+    href: 'power-voting-dao'
   }
 ]
 function hasWallet () {
