@@ -1,3 +1,4 @@
+'use client'
 import Table from '@/components/Table'
 
 export default function ViewPoll ({ params }) {
