@@ -8,7 +8,7 @@ import { TrashIcon } from '@heroicons/react/24/outline'
 import { useState } from 'react'
 import { createPropose } from '@/api'
 import { optionSeparator, pollTypes } from '@/util'
-
+import dayjs from 'dayjs'
 export default function CreatePage () {
   const {
     register,
@@ -30,17 +30,21 @@ export default function CreatePage () {
     }
   })
   const onSubmit = async data => {
-    console.log(data)
-    const { title, description: content, expieration, poll_type:vote_type } = data
+    const {
+      title,
+      description: content,
+      expieration,
+      poll_type: vote_type
+    } = data
     const options = data.option?.join(optionSeparator)
     const res = await createPropose({
       title,
       content,
-      expieration,
+      expieration: dayjs(expieration).format('YYYY-MM-DD HH:mm:ss'),
       vote_type,
       options
     })
-    console.log({res})
+    console.log({ res, data })
   }
 
   const list = [

@@ -59,7 +59,7 @@ export default function Home () {
   const [voteStatus, setVoteStatus] = useState('')
   const [participate, setParticipate] = useState('')
   const { data = [], isLoading } = useSWR('/api/home-list', getList)
-  // console.log({ data, isLoading })
+
   return (
     <div className='rounded border border-[#313D4F] bg-[#273141] min-h-[200px]'>
       <div className='flex justify-between px-[30px]'>

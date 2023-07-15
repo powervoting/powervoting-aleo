@@ -1,7 +1,10 @@
 import bs58 from "bs58";
+import dayjs from "dayjs";
 
 const CHAR_MAP =
   "123456789" + "ABCDEFGHJKLMNPQRSTUVWXYZ" + "abcdefghijkmnopqrstuvwxyz";
+export const host = "https://vm.aleo.org/api/testnet3/program";
+export const programID = "power_voting_v0_2.aleo";
 
 export const encodeBs58 = (str) => {
   const base58str = stringToBase58(str);
@@ -45,7 +48,6 @@ function stringToBase58(str) {
   return bs58.encode(bytes);
 }
 
-
 export const formatDollar = (value) => {
   const v = Number(value);
   if (Number.isNaN(v)) {
@@ -77,3 +79,36 @@ export const pollTypes = [
     value: 1,
   },
 ];
+
+export const fieldLen = "field".length;
+export const idUnitLen = "u64".length;
+export const u8Len = "u8".length;
+
+export function parseDetail(str) {
+  const title = str.match(/title:\s*([\w\d]*)/)?.[1];
+  const content = str.match(/content:\s*([\w\d]*)/)?.[1];
+  const options = str.match(/options:\s*([\w\d]*)/)?.[1];
+  const voteType = str.match(/vote_type:\s*([\w\d]*)/)?.[1];
+  const expiration = str.match(/expieration:\s*([\w\d]*)/)?.[1];
+  return {
+    title: decodeBs58(title?.slice(0, -fieldLen)),
+    content: decodeBs58(content?.slice(0, -fieldLen)),
+    options: decodeBs58(options?.slice(0, -fieldLen)),
+    voteType: decodeBs58(voteType?.slice(0, -u8Len)),
+    expiration: decodeBs58(expiration?.slice(0, -fieldLen)),
+  };
+}
+
+export async function parseStatus(expiration, id) {
+  console.log(dayjs(expiration).isValid());
+  const now = dayjs();
+  const exp = dayjs(expiration);
+
+  let status = "mint";
+  if (now.isAfter(exp)) {
+    // expired
+  }
+  const counts = await fetch(`${host}/${programID}/mapping/counts/id`).then(
+    (res) => res.json()
+  );
+}
