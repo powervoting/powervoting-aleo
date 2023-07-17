@@ -4,6 +4,8 @@ import ListFilter from '@/components/ListFilter.jsx'
 import { getList } from '@/api'
 import useSWR from 'swr'
 import Link from 'next/link'
+import { statusLinkMap } from '@/util'
+import classNames from 'classnames'
 
 const voteStatusList = [
   {
@@ -59,7 +61,7 @@ export default function Home () {
   const [voteStatus, setVoteStatus] = useState('')
   const [participate, setParticipate] = useState('')
   const { data = [], isLoading } = useSWR('/api/home-list', getList)
-
+  console.log('data', data)
   return (
     <div className='rounded border border-[#313D4F] bg-[#273141] min-h-[200px]'>
       <div className='flex justify-between px-[30px]'>
@@ -102,12 +104,19 @@ export default function Home () {
                   <td>{item.expiration}</td>
                   <td>{item.status}</td>
                   <td className='py-4'>
-                    <Link href={`/view-poll?id=${item.id}`}>
+                    <Link
+                      href={`${statusLinkMap[item.status]?.link}?id=${item.id}`}
+                    >
                       <button
                         type='button'
-                        className='hover:opacity-80 w-[150px] h-[42px] p-0 bg-[#213A33] border border-[#245534] rounded'
+                        className={
+                          'hover:opacity-80 w-[150px] h-[42px] p-0 bg-[#213A33] border border-[#245534] rounded'
+                        }
+                        style={{
+                          backgroundColor: statusLinkMap[item.status]?.color
+                        }}
                       >
-                        View
+                        {item.status}
                       </button>
                     </Link>
                   </td>

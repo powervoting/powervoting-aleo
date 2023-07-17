@@ -1,5 +1,12 @@
 import { execute } from "./aleo";
-import { encodeBs58, idUnitLen, parseDetail, host, programID } from "@/util";
+import {
+  encodeBs58,
+  idUnitLen,
+  parseDetail,
+  host,
+  programID,
+  parseStatus,
+} from "@/util";
 import { pollList, originPollList } from "@/api/mock";
 
 export const createPropose = async ({
@@ -52,7 +59,17 @@ export const getList = async () => {
         id,
       };
     });
-  return filterDetails;
+  // 获取状态信息
+  const finalDetails = await Promise.all(
+    filterDetails.map((item) => {
+      return new Promise((r) => {
+        parseStatus(item.expiration, item.id).then((status) =>
+          r({ ...item, status })
+        );
+      });
+    })
+  );
+  return finalDetails;
 };
 
 export const getDetail = async (id) => {
