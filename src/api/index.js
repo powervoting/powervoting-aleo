@@ -12,7 +12,7 @@ export const createPropose = async ({
   return await execute({
     programID,
     functionName: "propose",
-    fee: 1000,
+    // fee: 10000,
     inputs: [
       [title, "field"],
       [content, "field"],
@@ -21,7 +21,7 @@ export const createPropose = async ({
       [expieration, "field"],
     ]
       .map(([value, type]) => `${encodeBs58(value)}${type}`)
-      .join(" "),
+      .join("&&"),
   });
 };
 
