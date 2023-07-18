@@ -1,43 +1,48 @@
 'use client'
 import Table from '@/components/Table'
 import { useSearchParams } from 'next/navigation'
+import useSWR from 'swr'
+import { getParsedDetail } from '@/api'
+import { optionSeparator } from '@/util'
 
 export default function ViewPoll ({}) {
   const params = useSearchParams()
   const id = params.get('id')
+  const { data = {}, isLoading } = useSWR('votePoll/' + id, () =>
+    getParsedDetail(id)
+  )
+  console.log({ data })
+  const voteType = data?.voteType
+  const optionsList =
+    data?.options
+      ?.split(optionSeparator)
+      .map((optionName, value) => ({ optionName, value })) || []
 
-  const optionsList = [
-    {
-      optionName: 'OPTION 1',
-      voteCount: 5
-    },
-    {
-      optionName: 'OPTION 2',
-      voteCount: 3
-    }
-  ]
   const totalVoteCount = optionsList.reduce(
-    (acc, item) => acc + item.voteCount,
+    (acc, item) => acc + item.voteCount || 0,
     0
   )
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
   const list = [
     {
       name: 'Poll Title',
-      comp: <div>Dinner</div>
+      comp: <div>{data.title}</div>
     },
     {
       name: 'Poll Description',
-      comp: <div>Description</div>
+      comp: <div>{data.content}</div>
     },
     {
       name: 'Poll Expieraion Time',
-      comp: <div>Description</div>
+      comp: <div>{data.expiration}</div>
     },
     {
       name: 'Poll Result',
       comp: (
         <div>
-          <h3 className='mb-6'>Total 15 votes</h3>
+          <h3 className='mb-6'>Total {totalVoteCount} votes</h3>
           <div className='space-y-4'>
             {optionsList.map(item => {
               return (
@@ -49,11 +54,13 @@ export default function ViewPoll ({}) {
                     <div
                       className='absolute top-0 left-0 h-full rounded bg-[#1975D1]'
                       style={{
-                        width: `${(item.voteCount / totalVoteCount) * 100}%`
+                        width: `${
+                          (item.voteCount || 0 / totalVoteCount) * 100
+                        }%`
                       }}
                     ></div>
                   </div>
-                  <div>{item.voteCount} votes</div>
+                  <div>{item.voteCount || 0} votes</div>
                 </div>
               )
             })}
