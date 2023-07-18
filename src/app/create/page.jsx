@@ -9,6 +9,8 @@ import { useState } from 'react'
 import { createPropose } from '@/api'
 import { optionSeparator, pollTypes } from '@/util'
 import dayjs from 'dayjs'
+import { useSearchParams } from 'next/navigation'
+
 export default function CreatePage () {
   const {
     register,
@@ -21,6 +23,7 @@ export default function CreatePage () {
       option: ['Edit Option']
     }
   })
+  const params = useSearchParams()
   const [loading, setLoading] = useState(false)
   const { fields, append, remove } = useFieldArray({
     name: 'option',
@@ -42,7 +45,8 @@ export default function CreatePage () {
       content,
       expieration: dayjs(expieration).format('YYYY-MM-DD HH:mm:ss'),
       vote_type,
-      options
+      options,
+      proposal_type: params.get('type') || '1'
     })
     console.log({ res, data })
   }

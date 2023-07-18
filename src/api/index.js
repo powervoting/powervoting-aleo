@@ -17,6 +17,7 @@ export const createPropose = async ({
   options,
   vote_type,
   expieration,
+  proposal_type,
 }) => {
   return await execute({
     programID,
@@ -28,6 +29,7 @@ export const createPropose = async ({
       [options, "field"],
       [vote_type, "u8"],
       [expieration, "field"],
+      [proposal_type, "u8"],
     ]
       .map(([value, type]) => `${encodeBs58(value)}${type}`)
       .join("&&"),

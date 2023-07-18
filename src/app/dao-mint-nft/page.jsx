@@ -23,12 +23,11 @@ export default function DAOMintNFT () {
       comp: (
         <select
           name='dao'
+          disabled
           className='mt-2 block w-full rounded border-0 py-1.5 pl-3 bg-[#273141] pr-10 ring-1 ring-inset'
           {...register('dao', { required: true })}
         >
-          <option>United States</option>
-          <option>Canada</option>
-          <option>Mexico</option>
+          <option>Power Voting DAO</option>
         </select>
       )
     },
