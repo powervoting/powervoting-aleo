@@ -11,7 +11,7 @@ export const encodeBs58 = (str) => {
   const int = base58ToInt(base58str);
   return int;
 };
-export const decodeBs58 = (int) => {
+export const decodeBs58 = (int = 0) => {
   const bs58str = intToBase58(BigInt(int));
   const str = base58ToString(bs58str);
   return str;
@@ -84,7 +84,8 @@ export const fieldLen = "field".length;
 export const idUnitLen = "u64".length;
 export const u8Len = "u8".length;
 
-export function parseDetail(str) {
+export function parseDetail(v) {
+  const str = v + "";
   const title = str.match(/title:\s*([\w\d]*)/)?.[1];
   const content = str.match(/content:\s*([\w\d]*)/)?.[1];
   const options = str.match(/options:\s*([\w\d]*)/)?.[1];

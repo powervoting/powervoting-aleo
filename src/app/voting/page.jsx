@@ -7,14 +7,15 @@ import { RadioGroup } from '@headlessui/react'
 import classNames from 'classnames'
 import { useSearchParams } from 'next/navigation'
 import useSWR from 'swr'
-import { getDetail } from '@/api'
+import { getParsedDetail } from '@/api'
 import { optionSeparator } from '@/util'
 
 export default function Voting ({}) {
   const params = useSearchParams()
   const [loading, setLoading] = useState(false)
-  const { data = {}, isLoading } = useSWR('voteDetail', () =>
-    getDetail(params.get('id'))
+  const id = params.get('id')
+  const { data = {}, isLoading } = useSWR('voteDetail/' + id, () =>
+    getParsedDetail(id)
   )
   const voteType = data?.voteType
   const optionsList =
