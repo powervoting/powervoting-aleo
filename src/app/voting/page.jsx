@@ -7,10 +7,19 @@ import { RadioGroup } from '@headlessui/react'
 import classNames from 'classnames'
 import { useSearchParams } from 'next/navigation'
 import useSWR from 'swr'
-import { getParsedDetail } from '@/api'
+import { getParsedDetail, vote } from '@/api'
 import { optionSeparator } from '@/util'
+import aleoFetcher from '@/fetcher/aleo'
+import {
+  timelockEncrypt,
+  roundAt,
+  // HttpChainClient,
+  mainnetClient
+} from 'tlock-js'
+import dayjs from 'dayjs'
 
 export default function Voting ({}) {
+  const { data: walletAccount } = useSWR('walletAccount', aleoFetcher)
   const params = useSearchParams()
   const [loading, setLoading] = useState(false)
   const id = params.get('id')
@@ -33,7 +42,23 @@ export default function Voting ({}) {
       option: voteType === '1' ? [] : 0
     }
   })
-  const onSubmit = data => console.log(data)
+  console.log({ walletAccount })
+  const onSubmit = async values => {
+    const chainInfo = await mainnetClient().chain().info()
+    const roundNumber = roundAt(dayjs(data.expiration).unix(), chainInfo)
+    const payload = Buffer.from(
+      JSON.stringify({
+        index: values.option
+        // address: walletAccount?.address
+      })
+    )
+    const ciphertext = await timelockEncrypt(
+      roundNumber,
+      payload,
+      mainnetClient()
+    )
+    console.log(data)
+  }
   if (isLoading) {
     return <div>Loading...</div>
   }

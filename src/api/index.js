@@ -96,3 +96,20 @@ export const getRecord = async () => {
   };
   return await queryRecords(param);
 };
+
+export const vote = async () => {
+  return await execute({
+    programID,
+    functionName: "vote",
+    // fee: 10000,
+    inputs: [
+      [pid, "u64"],
+      [pvid, "field"],
+      [hash, "field"],
+      [vote_type, "u8"],
+      [expieration, "field"],
+    ]
+      .map(([value, type]) => `${encodeBs58(value)}${type}`)
+      .join("&&"),
+  });
+};

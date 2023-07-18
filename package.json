@@ -28,7 +28,8 @@
     "react-dom": "latest",
     "react-hook-form": "^7.45.0",
     "swr": "latest",
-    "tailwindcss": "latest"
+    "tailwindcss": "latest",
+    "tlock-js": "^0.6.1"
   },
   "devDependencies": {
     "@types/node": "20.3.1",
