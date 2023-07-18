@@ -79,6 +79,5 @@ export const getDetail = async (id) => {
   const key = `${id}u64`;
   const api = `${host}/${programID}/mapping/${mappingName}/${key}`;
   const data = await fetch(api).then((res) => res.json());
-  console.log(isMock);
   return isMock() ? parseDetail(pollOrigin) : parseDetail(data);
 };
