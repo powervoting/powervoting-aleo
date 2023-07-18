@@ -115,3 +115,31 @@ export const vote = async () => {
       .join("&&"),
   });
 };
+
+export const mintTokenApi = async () => {
+  // 固定mint10
+  return await execute({
+    programID,
+    functionName: "mint_token",
+    inputs: [[10, "u64"]]
+      .map(([value, type]) => `${encodeBs58(value)}${type}`)
+      .join("&&"),
+  });
+};
+
+export const mintNFTApi = async () => {
+  const name = "power voting token";
+  // const amount = 1;
+  const symbol = "PVT";
+  return await execute({
+    programID,
+    functionName: "mint_power_by_token",
+    inputs: [
+      `{
+        name:  ${encodeBs58(name)}field,
+        symbol: ${encodeBs58(symbol)}fiel",
+      }`,
+      `${encodeBs58(0)}u32`,
+    ].join("&&"),
+  });
+};

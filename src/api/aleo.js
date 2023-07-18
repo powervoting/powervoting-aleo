@@ -65,6 +65,7 @@ export async function queryRecords(params) {
     let queryRecords = await window.wallet.features["standard:records"].records(
       params
     );
+    console.log("queryRecords", queryRecords, params);
     return queryRecords.result || [];
   } catch (e) {
     console.log(e);
@@ -82,3 +83,9 @@ export async function execute(params) {
     console.log(e);
   }
 }
+
+// window.wallet.features["standard:records"]
+//   .records({
+//     program: "credits.aleo",
+//   })
+//   .then((res) => console.log(res));

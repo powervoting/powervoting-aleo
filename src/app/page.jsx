@@ -45,38 +45,18 @@ const participateList = [
   }
 ]
 
-const resList = [
-  {
-    name: 'EIP 9971',
-    deadline: '2021-09-30 12:00:00',
-    status: 'Voting'
-  },
-  {
-    name: 'FIP 1288',
-    deadline: '2021-09-30 12:00:00',
-    status: 'Voting'
-  }
-]
 export default function Home () {
   const [voteStatus, setVoteStatus] = useState('')
-  const [participate, setParticipate] = useState('')
   const { data = [], isLoading } = useSWR('/api/home-list', getList)
   console.log('data', data)
   return (
     <div className='rounded border border-[#313D4F] bg-[#273141] min-h-[200px]'>
-      <div className='flex justify-between px-[30px]'>
+      <div className='px-[30px]'>
         <ListFilter
           name='Status'
           value={voteStatus}
           list={voteStatusList}
           onChange={setVoteStatus}
-        />
-
-        <ListFilter
-          name='Participate'
-          value={participate}
-          list={participateList}
-          onChange={setParticipate}
         />
       </div>
 
