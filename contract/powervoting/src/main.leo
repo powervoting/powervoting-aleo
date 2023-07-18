@@ -27,6 +27,7 @@ program power_voting_v0_2.aleo {
         options: field,         // append options to field, separator: -&&&&&-, e.g. option1-&&&&&-option2-&&&&&-option3
         vote_type: u8,          // 0: single answer; 1: multiple answers
         expieration: field,     // expieration time, votes will be visiable after this time.
+        proposal_type: u8,      // proposal type 1u8: voting    2u8: DAO
     }
 
     // proposals will be public for all users, store them into mapping.  // pid => proposal
@@ -99,12 +100,12 @@ program power_voting_v0_2.aleo {
             name: 7006912922137281764648909451784002770527598field,     // stands for Power Voting Token string
             symbol: 5264980field,   // stands for PVT string
             amount: power.power,
-        } then finalize(power);
+        } then finalize(power.withdrawable_block_height);
     }
 
     // finalize the withdraw feature, if current block height is smaller than power withdrawble_block_height, withdraw will be failed.
-    finalize withdraw_token_from_power(power: Power) {
-        assert(power.withdrawable_block_height <= block.height);
+    finalize withdraw_token_from_power(withdrawable_block_height: u32) {
+        assert(withdrawable_block_height <= block.height);
     }
 
 
@@ -166,7 +167,7 @@ program power_voting_v0_2.aleo {
     * vote_type: 0: single answer; 1: multiple answers
     * expieration: expieration time, votes will be visiable after this time.
     **/
-    transition propose(public title: field, public content: field, public options: field, public vote_type: u8, public expieration: field) {
+    transition propose(public title: field, public content: field, public options: field, public vote_type: u8, public expieration: field, public proposal_type: u8) {
         // generate proposal
         let proposal: Proposal = Proposal {
             title:title,
@@ -174,6 +175,7 @@ program power_voting_v0_2.aleo {
             options:options,
             vote_type:vote_type,
             expieration:expieration,
+            proposal_type: proposal_type
         };
         // finalize the proposal.
         return then finalize(proposal);
