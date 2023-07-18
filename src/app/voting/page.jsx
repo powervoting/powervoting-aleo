@@ -6,27 +6,22 @@ import { useState } from 'react'
 import { RadioGroup } from '@headlessui/react'
 import classNames from 'classnames'
 import { useSearchParams } from 'next/navigation'
-
-const optionsList = [
-  {
-    optionName: 'OPTION 1',
-    value: 1
-  },
-  {
-    optionName: 'OPTION 2',
-    value: 2
-  },
-  {
-    optionName: 'OPTION 3',
-    value: 3
-  }
-]
+import useSWR from 'swr'
+import { getDetail } from '@/api'
+import { optionSeparator } from '@/util'
 
 export default function Voting ({}) {
   const params = useSearchParams()
   const [loading, setLoading] = useState(false)
-  const voteType = 2
-  console.log({ params })
+  const { data = {}, isLoading } = useSWR('voteDetail', () =>
+    getDetail(params.get('id'))
+  )
+  const voteType = data?.voteType
+  const optionsList =
+    data?.options
+      ?.split(optionSeparator)
+      .map((optionName, value) => ({ optionName, value })) || []
+  console.log(data)
   const {
     register,
     handleSubmit,
@@ -34,30 +29,31 @@ export default function Voting ({}) {
     formState: { errors }
   } = useForm({
     defaultValues: {
-      option: voteType === 1 ? [] : optionsList[0].value
+      option: voteType === '1' ? [] : 0
     }
   })
   const onSubmit = data => console.log(data)
-  console.log({ errors })
-
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
   const list = [
     {
       name: 'Poll Title',
-      comp: <div>Dinner</div>
+      comp: <div>{data.title}</div>
     },
     {
       name: 'Poll Description',
-      comp: <div>Description</div>
+      comp: <div>{data.content}</div>
     },
     {
       name: 'Poll Expieraion Time',
-      comp: <div>Description</div>
+      comp: <div>{data.expiration}</div>
     },
     {
       name: 'Vote',
       comp: (
         <>
-          {voteType === 1 ? (
+          {voteType === '1' ? (
             <div className='space-y-5'>
               {optionsList.map((item, index) => (
                 <div className='relative flex items-start' key={index}>
@@ -140,7 +136,11 @@ export default function Voting ({}) {
   ]
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='flow-root space-y-8'>
-      <Table title='View Poll' subTitle={'Multiple Answer'} list={list} />
+      <Table
+        title='View Poll'
+        subTitle={voteType === '1' ? 'Multiple Answer' : 'Single Answer'}
+        list={list}
+      />
 
       <div className='text-center'>
         <Button className='px-16' htmlType='submit' disabled={loading}>

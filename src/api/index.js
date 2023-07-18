@@ -7,7 +7,9 @@ import {
   programID,
   parseStatus,
 } from "@/util";
-import { pollList, originPollList } from "@/api/mock";
+import { pollList, originPollList, pollOrigin } from "@/api/mock";
+
+const isMock = () => globalThis.location.search.includes("mock=1");
 
 export const createPropose = async ({
   title,
@@ -33,7 +35,7 @@ export const createPropose = async ({
 };
 
 export const getList = async () => {
-  if (globalThis.location.search.includes("mock=1")) {
+  if (isMock()) {
     console.log("mock", originPollList, pollList);
     return pollList;
   }
@@ -76,5 +78,7 @@ export const getDetail = async (id) => {
   const mappingName = "proposals";
   const key = `${id}u64`;
   const api = `${host}/${programID}/mapping/${mappingName}/${key}`;
-  return await fetch(api).then((res) => res.json());
+  const data = await fetch(api).then((res) => res.json());
+  console.log(isMock);
+  return isMock() ? parseDetail(pollOrigin) : parseDetail(data);
 };
