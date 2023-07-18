@@ -62,14 +62,13 @@ export async function sign(params) {
 
 export async function queryRecords(params) {
   try {
-    let signResult = await window.wallet.features["standard:records"].sign(
+    let queryRecords = await window.wallet.features["standard:records"].records(
       params
     );
-    console.log({ signResult });
-    return JSON.parse(signResult);
+    return queryRecords.result || [];
   } catch (e) {
     console.log(e);
-    return "";
+    return [];
   }
 }
 export async function execute(params) {
