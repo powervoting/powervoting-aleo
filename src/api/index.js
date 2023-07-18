@@ -1,4 +1,4 @@
-import { execute } from "./aleo";
+import { execute, queryRecords } from "./aleo";
 import {
   encodeBs58,
   idUnitLen,
@@ -88,4 +88,11 @@ export const getDetail = async (id) => {
 export const getParsedDetail = async (id) => {
   const res = await getDetail(id);
   return isMock() ? parseDetail(pollOrigin) : parseDetail(res);
+};
+
+export const getRecord = async () => {
+  const param = {
+    program: programID,
+  };
+  return await queryRecords(param);
 };

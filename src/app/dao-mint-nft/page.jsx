@@ -4,6 +4,8 @@ import Button from '@/components/Button'
 import { useForm, Controller } from 'react-hook-form'
 import { useState } from 'react'
 import { formatDollar } from '@/util'
+import useSWR from 'swr'
+import { getRecord } from '@/api'
 
 export default function DAOMintNFT () {
   const {
@@ -12,6 +14,8 @@ export default function DAOMintNFT () {
     formState: { errors }
   } = useForm()
   const [loading, setLoading] = useState(false)
+  const { data } = useSWR(`daoMintNFT`, getRecord)
+  console.log({ data })
   const onSubmit = data => console.log(data)
   const list = [
     {
