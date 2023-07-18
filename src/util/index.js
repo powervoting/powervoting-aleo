@@ -103,37 +103,68 @@ export function parseDetail(v) {
 export async function parseStatus(expiration, id) {
   // console.log(dayjs(expiration).isValid());
   if (!dayjs(expiration).isValid()) {
-    return "view";
+    return "completed";
   }
   const now = dayjs();
   const exp = dayjs(expiration);
 
-  let status = "mint";
+  // 没到截止时间
+  let status = "vote";
+  // 到了截止时间
   if (now.isAfter(exp)) {
     // expired
     // 过期前现实mint,投票
-    status = "vote";
     const counts = await fetch(
       `${host}/${programID}/mapping/counts/${id}u64`
     ).then((res) => res.json());
-    if (!!counts) {
-      status = "view";
-    }
+    // if (!!counts) {
+    //   status = "view";
+    // }
+    status === !!counts ? "count" : "completed";
   }
   return status;
 }
 
-export const statusLinkMap = {
-  mint: {
-    link: "/dao-mint-nft",
-    color: "#3B495B",
+export const statusMap = {
+  count: {
+    statusLabel: "Counting",
+    actions: [
+      {
+        type: "view",
+        link: "/view-poll",
+        text: "Vote Counting",
+        color: "#213A33",
+      },
+    ],
   },
   vote: {
     link: "/voting",
-    color: "##1991EB",
+    statusLabel: "Voting",
+    actions: [
+      {
+        type: "vote",
+        link: "/voting",
+        text: "Vote",
+        color: "#1991EB",
+      },
+      {
+        type: "mint",
+        link: "/dao-mint-nft",
+        text: "Claim NFT",
+        color: "#3B495B",
+      },
+    ],
   },
-  view: {
+  completed: {
     link: "/view-poll",
-    color: "#35AF47",
+    statusLabel: "Completed",
+    actions: [
+      {
+        type: "view",
+        link: "/view-poll",
+        text: "View",
+        color: "#213A33",
+      },
+    ],
   },
 };

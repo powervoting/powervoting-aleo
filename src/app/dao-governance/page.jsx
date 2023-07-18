@@ -1,9 +1,10 @@
 'use client'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import ListFilter from '@/components/ListFilter.jsx'
-import { getList } from '@/api'
+import { getList, isMock } from '@/api'
 import useSWR from 'swr'
 import Link from 'next/link'
+import { statusMap } from '@/util'
 
 const voteStatusList = [
   {
@@ -12,69 +13,36 @@ const voteStatusList = [
   },
   {
     label: 'Voting',
-    value: 1
+    value: 'vote'
   },
   {
     label: 'Counting',
-    value: 2
+    value: 'count'
   },
   {
     label: 'Completed',
-    value: 3
+    value: 'completed'
   }
 ]
-
-const participateList = [
-  {
-    label: 'All',
-    value: ''
-  },
-  {
-    label: 'Created',
-    value: 1
-  },
-  {
-    label: 'Voted',
-    value: 2
-  },
-  {
-    label: 'Completed',
-    value: 3
-  }
-]
-
-const resList = [
-  {
-    name: 'EIP 9971',
-    deadline: '2021-09-30 12:00:00',
-    status: 'Voting'
-  },
-  {
-    name: 'FIP 1288',
-    deadline: '2021-09-30 12:00:00',
-    status: 'Voting'
-  }
-]
+const pageProposalType = '2'
 export default function Home () {
   const [voteStatus, setVoteStatus] = useState('')
-  const [participate, setParticipate] = useState('')
   const { data = [], isLoading } = useSWR('/api/home-list', getList)
-  // console.log({ data, isLoading })
+  const formatedData = useMemo(() => {
+    const pageData = isMock()
+      ? data
+      : data.filter(item => item.proposal_type === pageProposalType)
+    if (!voteStatus) return pageData
+    return pageData.filter(item => item.status === voteStatus)
+  }, [voteStatus, data])
   return (
     <div className='rounded border border-[#313D4F] bg-[#273141] min-h-[200px]'>
-      <div className='flex justify-between px-[30px]'>
+      <div className='px-[30px]'>
         <ListFilter
           name='Status'
           value={voteStatus}
           list={voteStatusList}
           onChange={setVoteStatus}
-        />
-
-        <ListFilter
-          name='Participate'
-          value={participate}
-          list={participateList}
-          onChange={setParticipate}
         />
       </div>
 
@@ -94,22 +62,68 @@ export default function Home () {
                 loading
               </td>
             </tr>
-          ) : data.length > 0 ? (
-            data.map((item, index) => {
+          ) : formatedData.length > 0 ? (
+            formatedData.map((item, index) => {
               return (
                 <tr key={index} className='text-white'>
                   <td className='pl-8'>{item.title}</td>
                   <td>{item.expiration}</td>
-                  <td>{item.status}</td>
+                  <td>{statusMap[item.status]?.statusLabel}</td>
                   <td className='py-4'>
-                    <Link href={`/view-poll?id=${item.id}`}>
-                      <button
-                        type='button'
-                        className='hover:opacity-80 w-[150px] h-[42px] p-0 bg-[#213A33] border border-[#245534] rounded'
-                      >
-                        View
-                      </button>
-                    </Link>
+                    <div className='space-x-2 inline-block'>
+                      {statusMap[item.status]?.actions?.map(v => {
+                        if (v.type === 'view') {
+                          return (
+                            <Link key={v.type} href={`${v.link}?id=${item.id}`}>
+                              <button
+                                type='button'
+                                className={
+                                  'hover:opacity-80 w-[150px] h-[42px] p-0 bg-[#213A33] border border-[#245534] rounded'
+                                }
+                                style={{
+                                  backgroundColor: v.color
+                                }}
+                              >
+                                {v.text}
+                              </button>
+                            </Link>
+                          )
+                        } else if (v.type === 'mint') {
+                          return (
+                            <Link key={v.type} href={`${v.link}?id=${item.id}`}>
+                              <button
+                                type='button'
+                                className={
+                                  'hover:opacity-80 w-[150px] h-[42px] p-0 bg-[#213A33] border border-[#245534] rounded'
+                                }
+                                style={{
+                                  backgroundColor: v.color
+                                }}
+                              >
+                                {v.text}
+                              </button>
+                            </Link>
+                          )
+                        } else {
+                          // vote
+                          return (
+                            <Link key={v.type} href={`${v.link}?id=${item.id}`}>
+                              <button
+                                type='button'
+                                className={
+                                  'hover:opacity-80 w-[150px] h-[42px] p-0 bg-[#213A33] border border-[#245534] rounded'
+                                }
+                                style={{
+                                  backgroundColor: v.color
+                                }}
+                              >
+                                {v.text}
+                              </button>
+                            </Link>
+                          )
+                        }
+                      })}
+                    </div>
                   </td>
                 </tr>
               )

@@ -7,9 +7,9 @@ import {
   programID,
   parseStatus,
 } from "@/util";
-import { pollList, originPollList, pollOrigin } from "@/api/mock";
+import { pollOrigin } from "@/api/mock";
 
-const isMock = () => globalThis?.location?.search?.includes("mock=1");
+export const isMock = () => globalThis?.location?.search?.includes("mock=1");
 
 export const createPropose = async ({
   title,
@@ -62,7 +62,7 @@ export const getList = async () => {
     .map((v) => {
       return {
         ...parseDetail(v.detail),
-        id,
+        id: v.id,
       };
     });
   // 获取状态信息
@@ -78,7 +78,7 @@ export const getList = async () => {
   // console.log({ finalDetails });
   return finalDetails;
 };
-getList();
+// getList();
 
 export const getDetail = async (id) => {
   const mappingName = "proposals";
@@ -141,5 +141,13 @@ export const mintNFTApi = async () => {
       }`,
       `${encodeBs58(0)}u32`,
     ].join("&&"),
+  });
+};
+
+export const mintPower = async () => {
+  return await execute({
+    programID,
+    functionName: "mint_power",
+    inputs: [],
   });
 };
