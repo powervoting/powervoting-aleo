@@ -5,11 +5,19 @@ import { useState } from 'react'
 import useSWR from 'swr'
 import { getRecord } from '@/api'
 import { mintTokenApi, mintNFTApi } from '@/api'
+import { Tooltip, Typography } from 'antd'
+import {
+  CheckOutlined,
+  HighlightOutlined,
+  SmileFilled,
+  SmileOutlined
+} from '@ant-design/icons'
+const { Paragraph } = Typography
 
 export default function DAOMintNFT () {
   const [loading, setLoading] = useState(false)
   const [mintLoading, setMintLoading] = useState(false)
-  const { data, mutate } = useSWR(`daoMintNFT`, getRecord)
+  const { data = [], mutate } = useSWR(`daoMintNFT`, getRecord)
   console.log({ data })
   const mintToken = async () => {
     setMintLoading(true)
@@ -55,6 +63,32 @@ export default function DAOMintNFT () {
                 Mint PVT Tokens
               </Button>
             </div>
+          </div>
+          <div className='space-y-2'>
+            {data.map((item, index) => (
+              <div
+                key={index}
+                className='flex items-center border border-[#313D4F] p-3 w-3/4 mx-auto rounded-lg'
+              >
+                <div className='flex-1'>
+                  <p className='text-white text-base'>{item.programID}</p>
+                  <p className='text-[#8896AA] text-sm'>{item.functionName}</p>
+                </div>
+                <div>
+                  <Tooltip title={JSON.stringify(item)}>
+                    <Paragraph
+                      copyable={{
+                        tooltips: ['click to copy', 'copyed'],
+                        text: JSON.stringify(item)
+                      }}
+                      style={{ color: '#fff' }}
+                    >
+                      copy
+                    </Paragraph>
+                  </Tooltip>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )

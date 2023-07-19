@@ -93,10 +93,21 @@ export const getParsedDetail = async (id) => {
 };
 
 export const getRecord = async () => {
+  let programID = programID;
+  if (isMock()) {
+    programID = "credits.aleo";
+  }
   const param = {
     program: programID,
   };
   return await queryRecords(param);
+};
+
+export const getVoteId = async () => {
+  const mappingName = "vote_ids";
+  // const key = `${vote_ids}u64`;
+  const api = `${host}/${programID}/mapping/${mappingName}`;
+  return await fetch(api).then((res) => res.json());
 };
 
 export const vote = async () => {
@@ -148,6 +159,6 @@ export const mintPower = async () => {
   return await execute({
     programID,
     functionName: "mint_power",
-    inputs: [],
+    inputs: "",
   });
 };

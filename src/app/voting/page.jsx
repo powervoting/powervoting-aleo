@@ -7,7 +7,7 @@ import { RadioGroup } from '@headlessui/react'
 import classNames from 'classnames'
 import { useSearchParams } from 'next/navigation'
 import useSWR from 'swr'
-import { getParsedDetail, vote } from '@/api'
+import { getParsedDetail, vote, getVoteId } from '@/api'
 import { optionSeparator } from '@/util'
 import aleoFetcher from '@/fetcher/aleo'
 import {
@@ -26,6 +26,8 @@ export default function Voting ({}) {
   const { data = {}, isLoading } = useSWR('voteDetail/' + id, () =>
     getParsedDetail(id)
   )
+  const { data: voteId } = useSWR('latestVoteId', getVoteId)
+  console.log({ voteId })
   const voteType = data?.voteType
   const optionsList =
     data?.options
@@ -57,6 +59,7 @@ export default function Voting ({}) {
       payload,
       mainnetClient()
     )
+    // await vote
     console.log(data)
   }
   if (isLoading) {

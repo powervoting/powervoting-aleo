@@ -1,7 +1,7 @@
 'use client'
 import { useMemo, useState } from 'react'
 import ListFilter from '@/components/ListFilter.jsx'
-import { getList, isMock, mintPower } from '@/api'
+import { getList, mintPower } from '@/api'
 import useSWR from 'swr'
 import Link from 'next/link'
 import { statusMap } from '@/util'
@@ -30,9 +30,11 @@ export default function Home () {
   const [voteStatus, setVoteStatus] = useState('')
   const { data = [], isLoading } = useSWR('/api/home-list', getList)
   const formatedData = useMemo(() => {
-    const pageData = isMock()
-      ? data
-      : data.filter(item => item.proposal_type === pageProposalType)
+    const pageData = data.filter(
+      item =>
+        item.proposal_type === pageProposalType ||
+        item.proposal_type === undefined
+    )
     if (!voteStatus) return pageData
     return pageData.filter(item => item.status === voteStatus)
   }, [voteStatus, data])
@@ -100,7 +102,6 @@ export default function Home () {
                               }
                               onClick={() => {
                                 mintPower()
-                                console.log('xxx')
                               }}
                               style={{
                                 backgroundColor: v.color
