@@ -110,7 +110,7 @@ export const getVoteId = async () => {
   return await fetch(api).then((res) => res.json());
 };
 
-export const vote = async () => {
+export const vote = async ({ pid, pvid, hash, vote_type, expieration }) => {
   return await execute({
     programID,
     functionName: "vote",
@@ -160,5 +160,18 @@ export const mintPower = async () => {
     programID,
     functionName: "mint_power",
     inputs: "",
+  });
+};
+
+export const getCountOp = async ({ pid, option_counts }) => {
+  return await execute({
+    programID,
+    functionName: "count",
+    inputs: [
+      [pid, "u64"],
+      [option_counts, "field"],
+    ]
+      .map(([value, type]) => `${encodeBs58(value)}${type}`)
+      .join("&&"),
   });
 };

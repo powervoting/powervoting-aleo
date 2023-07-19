@@ -2,7 +2,7 @@
 import Table from '@/components/Table'
 import { useSearchParams } from 'next/navigation'
 import useSWR from 'swr'
-import { getParsedDetail } from '@/api'
+import { getParsedDetail, getCountOp } from '@/api'
 import { optionSeparator } from '@/util'
 
 export default function ViewPoll ({}) {
@@ -11,7 +11,11 @@ export default function ViewPoll ({}) {
   const { data = {}, isLoading } = useSWR('votePoll/' + id, () =>
     getParsedDetail(id)
   )
-  console.log({ data })
+  const { data: counts } = useSWR(
+    data.options ? 'voteCounts/' + id : null,
+    () => getCountOp(id, data.options)
+  )
+  console.log({ data, counts })
   const voteType = data?.voteType
   const optionsList =
     data?.options
