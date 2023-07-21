@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 const CHAR_MAP =
   "123456789" + "ABCDEFGHJKLMNPQRSTUVWXYZ" + "abcdefghijkmnopqrstuvwxyz";
 export const host = "https://vm.aleo.org/api/testnet3/program";
-export const programID = "power_voting_v0_5.aleo";
+export const programID = "power_voting_test_0_1.aleo";
 
 export const encodeBs58 = (str) => {
   const base58str = stringToBase58(str);

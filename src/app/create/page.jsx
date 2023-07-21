@@ -46,7 +46,7 @@ export default function CreatePage () {
       expieration: dayjs(expieration).format('YYYY-MM-DD HH:mm:ss'),
       vote_type,
       options,
-      proposal_type: params.get('type') || '1'
+      proposal_type: params.get('type') || '0'
     })
     console.log({ res, data })
   }

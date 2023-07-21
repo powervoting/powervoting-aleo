@@ -25,19 +25,18 @@ const voteStatusList = [
   }
 ]
 
-const pageProposalType = '1'
+const pageProposalType = '0'
 export default function Home () {
   const [voteStatus, setVoteStatus] = useState('')
   const { data = [], isLoading } = useSWR('/api/home-list', getList)
   const formatedData = useMemo(() => {
     const pageData = data.filter(
-      item =>
-        item.proposal_type === pageProposalType ||
-        item.proposal_type === undefined
+      item => item.voteType === pageProposalType || item.voteType === undefined
     )
     if (!voteStatus) return pageData
     return pageData.filter(item => item.status === voteStatus)
   }, [voteStatus, data])
+  console.log({ formatedData })
 
   return (
     <div className='rounded border border-[#313D4F] bg-[#273141] min-h-[200px]'>

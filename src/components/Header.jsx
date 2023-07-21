@@ -85,7 +85,7 @@ export default function Header () {
       <div className='space-x-2.5'>
         {links.some(v => v.href === pathname) && (
           <Link
-            href={`${pathname === '/' ? '/create?type=1' : '/create?type=2'}`}
+            href={`${pathname === '/' ? '/create?type=0' : '/create?type=1'}`}
           >
             <Button type='primary'>Create A Poll</Button>
           </Link>
